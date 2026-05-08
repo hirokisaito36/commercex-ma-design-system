@@ -1,0 +1,1120 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1280" />
+<title>CommerceX M&A — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&family=Noto+Serif+JP:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ---------- Brand tokens ---------- */
+    --gold: #C49000;
+    --gold-light: #F0C830;
+    --cream: #FFF7DC;
+    --black: #111111;
+    --dark: #333333;
+    --muted: #888888;
+    --surface: #F5F5F3;
+    --border: #E0E0E0;
+    --white: #FFFFFF;
+
+    /* Extended neutrals (derived, for UI states) */
+    --ink-900: #111111;
+    --ink-700: #333333;
+    --ink-500: #5C5C5C;
+    --ink-400: #888888;
+    --ink-300: #B8B8B8;
+    --ink-200: #E0E0E0;
+    --ink-100: #F5F5F3;
+    --ink-50:  #FAFAF9;
+
+    /* Semantic (support only — use sparingly) */
+    --success: #2F8F5E;
+    --warning: #C48A1A;
+    --danger:  #C23B3B;
+    --info:    #2F6FAE;
+
+    /* Spacing scale (4pt grid) */
+    --s-0: 0;
+    --s-1: 4px;
+    --s-2: 8px;
+    --s-3: 12px;
+    --s-4: 16px;
+    --s-5: 24px;
+    --s-6: 32px;
+    --s-7: 48px;
+    --s-8: 64px;
+    --s-9: 96px;
+    --s-10:128px;
+
+    /* Radius */
+    --r-xs: 2px;
+    --r-sm: 4px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 20px;
+    --r-pill: 999px;
+
+    /* Shadow */
+    --sh-0: 0 0 0 1px rgba(17,17,17,.06);
+    --sh-1: 0 1px 2px rgba(17,17,17,.06), 0 1px 1px rgba(17,17,17,.04);
+    --sh-2: 0 4px 12px rgba(17,17,17,.08), 0 1px 2px rgba(17,17,17,.04);
+    --sh-3: 0 12px 32px rgba(17,17,17,.12), 0 2px 6px rgba(17,17,17,.06);
+    --sh-gold: 0 8px 24px rgba(196,144,0,.25);
+
+    --font-sans: "Noto Sans JP", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    --font-serif: "Noto Serif JP", "Yu Mincho", serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    color: var(--ink-700);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "palt";
+    letter-spacing: .02em;
+  }
+
+  /* ---------- Layout ---------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+  .sidebar {
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; overflow: auto;
+    background: var(--black);
+    color: var(--white);
+    padding: 32px 24px;
+  }
+  .sidebar .brand {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+    padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 20px;
+  }
+  .sidebar .brand-mark {
+    height: 36px; width: auto; max-width: 100%; object-fit: contain; display: block;
+  }
+  .sidebar .brand-sub { font-size: 10px; color: rgba(255,255,255,.5); letter-spacing: .2em; }
+  .sidebar nav { display: flex; flex-direction: column; gap: 4px; }
+  .sidebar .nav-label {
+    font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,.4);
+    padding: 12px 0 6px 12px; font-weight: 600;
+  }
+  .sidebar a {
+    color: rgba(255,255,255,.78);
+    text-decoration: none; font-size: 13px;
+    padding: 8px 12px; border-radius: var(--r-sm);
+    display: flex; align-items: center; gap: 8px;
+    border-left: 2px solid transparent;
+  }
+  .sidebar a:hover { color: #fff; background: rgba(255,255,255,.04); }
+  .sidebar a .num {
+    font-family: var(--font-mono); font-size: 10px; color: var(--gold-light);
+    width: 18px;
+  }
+
+  .main { padding: 0; max-width: 1100px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 80px 64px 64px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    background:
+      radial-gradient(1200px 400px at 85% -10%, rgba(240,200,48,.08), transparent 60%),
+      var(--white);
+  }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: .22em; color: var(--gold);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 24px;
+  }
+  .eyebrow::before {
+    content: ""; width: 24px; height: 1px; background: var(--gold);
+  }
+  h1.display {
+    font-size: 72px; line-height: 1.15; letter-spacing: -.01em;
+    font-weight: 800; color: var(--black);
+    margin: 0 0 20px;
+  }
+  h1.display .accent { color: var(--gold); }
+  h1.display .slash { color: var(--ink-300); font-weight: 300; margin: 0 .15em; }
+  .hero-lede {
+    font-size: 18px; line-height: 1.8; color: var(--ink-500);
+    max-width: 720px; margin: 0 0 36px;
+  }
+  .hero-meta {
+    display: flex; gap: 40px; padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .hero-meta dt {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .18em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
+  }
+  .hero-meta dd {
+    margin: 0; font-size: 14px; color: var(--ink-700); font-weight: 500;
+  }
+
+  /* ---------- Section frame ---------- */
+  section.sec { padding: 96px 64px; border-bottom: 1px solid var(--border); }
+  section.sec.dark { background: var(--black); color: #fff; border-bottom: none; }
+  section.sec.cream { background: var(--cream); }
+  .sec-head {
+    display: grid; grid-template-columns: 120px 1fr; gap: 40px;
+    margin-bottom: 56px; align-items: baseline;
+  }
+  .sec-num {
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: .2em; color: var(--gold);
+  }
+  .sec.dark .sec-num { color: var(--gold-light); }
+  .sec-title { font-size: 40px; font-weight: 700; color: var(--black); margin: 0 0 12px; letter-spacing: -.01em; }
+  .sec.dark .sec-title { color: #fff; }
+  .sec-lede { font-size: 15px; color: var(--ink-500); line-height: 1.8; max-width: 620px; margin: 0; }
+  .sec.dark .sec-lede { color: rgba(255,255,255,.6); }
+
+  .subsection-title {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .2em;
+    color: var(--muted); text-transform: uppercase;
+    margin: 64px 0 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+  .sec.dark .subsection-title { color: rgba(255,255,255,.5); border-bottom-color: rgba(255,255,255,.08); }
+
+  /* ---------- Brand / Logo ---------- */
+  .logo-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    margin-bottom: 48px;
+  }
+  .logo-card {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    display: grid; grid-template-rows: 1fr auto;
+    min-height: 220px;
+  }
+  .logo-card .show {
+    display: flex; align-items: center; justify-content: center;
+    padding: 36px;
+  }
+  .logo-card .show.on-white { background: var(--white); }
+  .logo-card .show.on-black { background: var(--black); }
+  .logo-card .show.on-cream { background: var(--cream); }
+  .logo-card .show.on-surface { background: var(--surface); }
+  .logo-card img { max-width: 72%; height: auto; }
+  .logo-card .caption {
+    padding: 14px 18px; font-size: 12px; color: var(--ink-500);
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+  }
+  .logo-card .caption .token {
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+  }
+
+  .clearspace-row {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px;
+    align-items: stretch;
+  }
+  .clearspace-demo {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 48px; display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .clearspace-demo .box {
+    position: relative;
+    padding: 48px;
+    outline: 1px dashed var(--gold);
+  }
+  .clearspace-demo .box::before, .clearspace-demo .box::after {
+    content: "X"; position: absolute;
+    font-family: var(--font-mono); color: var(--gold);
+    font-size: 11px; letter-spacing: .2em;
+  }
+  .clearspace-demo .box::before { top: -16px; left: 50%; transform: translateX(-50%); }
+  .clearspace-demo .box::after { bottom: -16px; left: 50%; transform: translateX(-50%); }
+  .clearspace-demo img { height: 64px; }
+  .clearspace-note {
+    padding: 24px 28px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .clearspace-note h4 { margin: 0 0 12px; font-size: 16px; font-weight: 700; color: var(--black); }
+  .clearspace-note p { margin: 0 0 12px; font-size: 13px; color: var(--ink-500); line-height: 1.8; }
+
+  /* ---------- Color ---------- */
+  .color-primary-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px;
+    margin-bottom: 40px;
+  }
+  .swatch {
+    border-radius: var(--r-lg); overflow: hidden;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    min-height: 180px;
+  }
+  .swatch .chip { flex: 1; padding: 20px; display: flex; align-items: flex-start; justify-content: space-between; }
+  .swatch .chip .role {
+    font-size: 11px; font-family: var(--font-mono); letter-spacing: .16em;
+    padding: 4px 8px; border-radius: var(--r-sm);
+    background: rgba(255,255,255,.8); color: var(--black);
+  }
+  .swatch .chip .role.dark { background: rgba(0,0,0,.5); color: #fff; }
+  .swatch .chip .contrast {
+    font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,.7);
+  }
+  .swatch .meta {
+    padding: 14px 18px; background: var(--white);
+    display: grid; grid-template-columns: 1fr auto; gap: 4px;
+    border-top: 1px solid var(--border);
+  }
+  .swatch .meta .name { font-weight: 700; font-size: 14px; color: var(--black); }
+  .swatch .meta .hex { font-family: var(--font-mono); font-size: 12px; color: var(--ink-500); }
+  .swatch .meta .token { font-family: var(--font-mono); font-size: 11px; color: var(--muted); grid-column: 1/-1; }
+
+  .swatch.gold .chip { background: var(--gold); }
+  .swatch.gold-light .chip { background: var(--gold-light); }
+  .swatch.cream .chip { background: var(--cream); }
+  .swatch.black .chip { background: var(--black); }
+  .swatch.dark .chip { background: var(--dark); }
+  .swatch.muted .chip { background: var(--muted); }
+  .swatch.surface .chip { background: var(--surface); }
+  .swatch.border .chip { background: var(--border); }
+  .swatch.white .chip { background: var(--white); }
+  .swatch.success .chip { background: var(--success); }
+  .swatch.warning .chip { background: var(--warning); }
+  .swatch.danger .chip { background: var(--danger); }
+  .swatch.info .chip { background: var(--info); }
+
+  .neutral-grid, .semantic-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+
+  /* Color usage example */
+  .usage-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin-top: 24px;
+  }
+  .usage-card {
+    border-radius: var(--r-lg); overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .usage-card .preview { padding: 40px; min-height: 220px; display: flex; flex-direction: column; justify-content: center; }
+  .usage-card .preview.on-white { background: var(--white); }
+  .usage-card .preview.on-black { background: var(--black); color: #fff; }
+  .usage-card .preview h5 {
+    font-size: 11px; font-family: var(--font-mono); letter-spacing: .2em;
+    margin: 0 0 16px; text-transform: uppercase;
+  }
+  .usage-card .preview.on-white h5 { color: var(--gold); }
+  .usage-card .preview.on-black h5 { color: var(--gold-light); }
+  .usage-card .preview .big {
+    font-size: 28px; font-weight: 700; line-height: 1.3; margin: 0 0 12px;
+  }
+  .usage-card .preview.on-white .big { color: var(--black); }
+  .usage-card .preview .body {
+    font-size: 13px; line-height: 1.7;
+  }
+  .usage-card .preview.on-white .body { color: var(--ink-500); }
+  .usage-card .preview.on-black .body { color: rgba(255,255,255,.7); }
+  .usage-card .preview .btn-wrap { margin-top: 20px; }
+  .usage-card .note {
+    padding: 14px 18px; font-size: 12px; color: var(--ink-500);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); letter-spacing: .04em;
+  }
+
+  /* ---------- Typography ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 220px 1fr; gap: 40px;
+    padding: 28px 0; border-bottom: 1px solid var(--border);
+    align-items: baseline;
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: .06em;
+  }
+  .type-meta .name {
+    display: block; font-weight: 700; color: var(--black);
+    font-size: 12px; letter-spacing: .16em; margin-bottom: 6px;
+  }
+  .type-meta .specs { line-height: 1.8; }
+  .type-sample { color: var(--black); }
+  .t-display { font-size: 72px; line-height: 1.05; font-weight: 800; letter-spacing: -.01em; }
+  .t-h1 { font-size: 48px; line-height: 1.2; font-weight: 700; letter-spacing: -.005em; }
+  .t-h2 { font-size: 32px; line-height: 1.3; font-weight: 700; }
+  .t-h3 { font-size: 24px; line-height: 1.4; font-weight: 600; }
+  .t-h4 { font-size: 18px; line-height: 1.5; font-weight: 600; }
+  .t-body-lg { font-size: 17px; line-height: 1.8; font-weight: 400; color: var(--dark); }
+  .t-body { font-size: 15px; line-height: 1.8; font-weight: 400; color: var(--dark); }
+  .t-small { font-size: 13px; line-height: 1.7; font-weight: 400; color: var(--ink-500); }
+  .t-caption { font-size: 11px; line-height: 1.6; font-weight: 500; color: var(--muted); letter-spacing: .06em; }
+  .t-eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .22em;
+    color: var(--gold); text-transform: uppercase; font-weight: 500;
+  }
+
+  /* ---------- Spacing ---------- */
+  .token-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  }
+  .space-table, .radius-table, .shadow-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .space-table th, .space-table td,
+  .radius-table th, .radius-table td,
+  .shadow-table th, .shadow-table td {
+    padding: 14px 12px; text-align: left;
+    font-size: 13px; border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .space-table th, .radius-table th, .shadow-table th {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: .18em; color: var(--muted); text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 1px solid var(--black);
+  }
+  .token-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--black);
+  }
+  .token-value { font-family: var(--font-mono); color: var(--ink-500); }
+  .space-bar {
+    display: inline-block; height: 14px; background: var(--gold);
+    border-radius: var(--r-xs); vertical-align: middle;
+  }
+  .radius-swatch {
+    display: inline-block; width: 56px; height: 36px;
+    background: var(--black); vertical-align: middle;
+  }
+  .shadow-swatch {
+    display: inline-block; width: 72px; height: 42px;
+    background: var(--white); border-radius: var(--r-md);
+    vertical-align: middle;
+  }
+
+  /* ---------- Components (buttons only — lightweight preview) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px; border-radius: var(--r-sm);
+    font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+    letter-spacing: .04em; cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .15s ease;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--black); color: #fff; }
+  .btn-primary:hover { background: var(--dark); }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-gold:hover { background: #B07F00; }
+  .btn-gold-dark { background: var(--gold-light); color: var(--black); }
+  .btn-ghost {
+    background: transparent; color: var(--black); border-color: var(--ink-300);
+  }
+  .btn-ghost:hover { border-color: var(--black); }
+  .btn .arrow { font-family: var(--font-mono); font-weight: 400; }
+
+  /* ---------- Application mock (proposal doc) ---------- */
+  .doc-mock {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--sh-3);
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  .doc-mock .doc-page {
+    aspect-ratio: 16/10;
+    padding: 56px 64px;
+    position: relative;
+    background: #fff;
+  }
+  .doc-mock .doc-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: nowrap;
+    padding-bottom: 20px; border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .doc-mock .doc-header img { height: 24px; flex-shrink: 0; }
+  .doc-mock .doc-header .meta {
+    font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: .14em;
+    white-space: nowrap;
+  }
+  .doc-mock .doc-title .eyebrow { margin-bottom: 16px; }
+  .doc-mock .doc-title h2 {
+    font-size: 42px; font-weight: 800; color: var(--black);
+    line-height: 1.15; margin: 0 0 20px; letter-spacing: -.01em;
+  }
+  .doc-mock .doc-title h2 .gold { color: var(--gold); }
+  .doc-mock .doc-title p {
+    color: var(--ink-500); font-size: 14px; line-height: 1.9;
+    max-width: 540px; margin: 0 0 32px;
+  }
+  .doc-mock .kpis {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; padding: 24px; background: var(--cream);
+    border-radius: var(--r-md); border-left: 3px solid var(--gold);
+    max-width: 640px;
+  }
+  .doc-mock .kpi {
+    display: flex; flex-direction: column; justify-content: flex-start;
+    gap: 8px;
+  }
+  .doc-mock .kpi .label {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em;
+    color: var(--muted); margin-bottom: 0;
+    line-height: 1.4; word-break: auto-phrase; line-break: strict;
+  }
+  .doc-mock .kpi .val {
+    font-size: 26px; font-weight: 800; color: var(--black); line-height: 1.1;
+    white-space: nowrap;
+  }
+  .doc-mock .kpi .val .unit { font-size: 14px; color: var(--ink-500); font-weight: 500; margin-left: 2px; }
+  .doc-mock .footer {
+    position: absolute; bottom: 32px; left: 64px; right: 64px;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: .18em; color: var(--muted);
+    padding-top: 16px; border-top: 1px solid var(--border);
+  }
+
+  .doc-mock.dark .doc-page { background: var(--black); color: #fff; }
+  .doc-mock.dark .doc-header { border-bottom-color: rgba(255,255,255,.1); }
+  .doc-mock.dark .doc-header img { filter: none; }
+  .doc-mock.dark .doc-header .meta { color: rgba(255,255,255,.4); }
+  .doc-mock.dark .doc-title h2 { color: #fff; }
+  .doc-mock.dark .doc-title h2 .gold { color: var(--gold-light); }
+  .doc-mock.dark .doc-title p { color: rgba(255,255,255,.6); }
+  .doc-mock.dark .kpis { background: rgba(240,200,48,.06); border-left-color: var(--gold-light); }
+  .doc-mock.dark .kpi .label { color: rgba(255,255,255,.5); }
+  .doc-mock.dark .kpi .val { color: #fff; }
+  .doc-mock.dark .kpi .val .unit { color: rgba(255,255,255,.6); }
+  .doc-mock.dark .footer {
+    border-top-color: rgba(255,255,255,.08); color: rgba(255,255,255,.4);
+  }
+
+  .doc-mock-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer.site {
+    padding: 48px 64px; background: var(--black); color: rgba(255,255,255,.5);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px;
+    font-family: var(--font-mono); letter-spacing: .08em;
+  }
+  footer.site .left { display: flex; align-items: center; gap: 14px; }
+  footer.site img { height: 22px; }
+  footer.site .rule { width: 1px; height: 20px; background: rgba(255,255,255,.2); }
+
+  /* ---------- Code chips ---------- */
+  code.tok {
+    font-family: var(--font-mono); font-size: 11px;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: var(--r-xs);
+    color: var(--ink-700);
+  }
+  .sec.dark code.tok {
+    background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.1);
+    color: #fff;
+  }
+
+  /* rule tiles */
+  .rules {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-top: 24px;
+  }
+  .rule {
+    padding: 20px 22px;
+    border-radius: var(--r-md);
+    border: 1px solid var(--border);
+    display: flex; gap: 14px;
+  }
+  .rule .mark {
+    width: 22px; height: 22px; border-radius: var(--r-pill); flex: 0 0 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    color: #fff;
+  }
+  .rule.do .mark { background: var(--success); }
+  .rule.dont .mark { background: var(--danger); }
+  .rule h5 { margin: 0 0 6px; font-size: 13px; color: var(--black); }
+  .rule p { margin: 0; font-size: 12px; color: var(--ink-500); line-height: 1.7; }
+
+  /* component preview */
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .preview-box {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    margin-top: 16px;
+  }
+  .preview-box.dark { background: var(--black); border-color: rgba(255,255,255,.12); }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#111111">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#111111"/>
+    <g transform="translate(480, 240)">
+      <path d="M10 8 L80 8 L120 108 L160 8 L230 8 L150 170 L230 330 L160 330 L120 230 L80 330 L10 330 L90 170 Z" fill="#F0C830"/>
+    </g>
+    <text x="600" y="640" font-family="sans-serif" font-size="36" font-weight="700" fill="#F0C830" text-anchor="middle" letter-spacing="6">COMMERCEX M&amp;A</text>
+    <text x="600" y="690" font-family="monospace" font-size="18" fill="#888" text-anchor="middle" letter-spacing="8">DESIGN SYSTEM · V1</text>
+  </svg>
+</template>
+<div class="shell">
+
+  <aside class="sidebar" aria-label="section-nav">
+    <div class="brand">
+      <img class="brand-mark" src="brand_assets/logo-white.png" alt="CommerceX M&A">
+      <div class="brand-sub">DESIGN SYSTEM / V1</div>
+    </div>
+    <nav>
+      <div class="nav-label">CONTENTS</div>
+      <a href="#brand"><span class="num">01</span>Brand & Logo</a>
+      <a href="#color"><span class="num">02</span>Color</a>
+      <a href="#type"><span class="num">03</span>Typography</a>
+      <a href="#space"><span class="num">04</span>Spacing</a>
+      <a href="#radius"><span class="num">05</span>Radius</a>
+      <a href="#shadow"><span class="num">06</span>Shadow</a>
+      <a href="#components"><span class="num">07</span>Buttons</a>
+      <a href="#apply"><span class="num">08</span>In Use</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="eyebrow">CommerceX M&A / Brand Guidelines 2026</div>
+      <h1 class="display">
+        Sell-side <span class="slash">×</span> Buy-side<br>
+        をつなぐ、<span class="accent">速さと誠実さ</span>。
+      </h1>
+      <p class="hero-lede">
+        CommerceX M&amp;Aは、EC・D2C事業者に特化したM&amp;A支援サービスです。本ガイドラインはブランドの一貫性を保ち、
+        営業資料・提案書・Webサイトで「テックらしい機動力」と「金融プロフェッショナルの信頼感」を両立させるためのルールブックです。
+      </p>
+      <dl class="hero-meta">
+        <div>
+          <dt>VERSION</dt><dd>v1.0 &nbsp;/&nbsp; 2026.04</dd>
+        </div>
+        <div>
+          <dt>SCOPE</dt><dd>Color · Type · Spacing · Radius · Shadow</dd>
+        </div>
+        <div>
+          <dt>PRIMARY USE</dt><dd>営業資料・提案書</dd>
+        </div>
+      </dl>
+    </header>
+
+    <!-- BRAND -->
+    <section class="sec" id="brand">
+      <div class="sec-head">
+        <div class="sec-num">01 / BRAND</div>
+        <div>
+          <h2 class="sec-title">ロゴとブランドマーク</h2>
+          <p class="sec-lede">
+            CommerceX M&amp;Aのロゴは、「交差」を意味するXを大胆なシルエットで表現しています。
+            売り手と買い手、事業と資本、機会とタイミングが交わる瞬間を象徴します。
+            必ず下記のバリエーションから背景に応じて選び、独自に色を作らないでください。
+          </p>
+        </div>
+      </div>
+
+      <div class="subsection-title">LOGO VARIATIONS — HORIZONTAL (PRIMARY)</div>
+      <p style="font-size: 13px; color: var(--ink-500); line-height: 1.8; margin: -8px 0 20px; max-width: 680px;">
+        標準ロゴ。Webサイトのヘッダー、名刺、プレゼン資料の表紙など、横長の余白がある場面で優先的に使用します。
+      </p>
+      <div class="logo-grid">
+        <div class="logo-card">
+          <div class="show on-white"><img src="brand_assets/logo.png" alt=""></div>
+          <div class="caption"><span>Primary / 白背景</span><span class="token">logo.png</span></div>
+        </div>
+        <div class="logo-card">
+          <div class="show on-black"><img src="brand_assets/logo-white.png" alt=""></div>
+          <div class="caption"><span>Mono reverse / ダーク背景</span><span class="token">logo-white.png</span></div>
+        </div>
+      </div>
+
+      <div class="subsection-title">LOGO VARIATIONS — STACKED (SECONDARY)</div>
+      <p style="font-size: 13px; color: var(--ink-500); line-height: 1.8; margin: -8px 0 20px; max-width: 680px;">
+        縦組みロゴ。SNSアイコン、名刺の裏面、正方形〜縦長のフレーム、資料の章扉など、
+        コンパクトで存在感のある表示が必要な場面で使用します。
+      </p>
+      <div class="logo-grid">
+        <div class="logo-card" style="min-height: 260px;">
+          <div class="show on-white"><img src="brand_assets/logo-stacked-transparent.png" alt="" style="max-width: 62%;"></div>
+          <div class="caption"><span>Primary / 白背景</span><span class="token">logo-stacked.png</span></div>
+        </div>
+        <div class="logo-card" style="min-height: 260px;">
+          <div class="show on-black"><img src="brand_assets/logo-stacked-white.png" alt="" style="max-width: 62%;"></div>
+          <div class="caption"><span>Mono reverse / ダーク背景</span><span class="token">logo-stacked-white.png</span></div>
+        </div>
+      </div>
+
+      <div class="subsection-title">CLEAR SPACE & MIN SIZE</div>
+      <div class="clearspace-row">
+        <div class="clearspace-demo">
+          <div class="box">
+            <img src="brand_assets/logo.png" alt="">
+          </div>
+        </div>
+        <div class="clearspace-note">
+          <h4>余白 = Xマークの高さ分</h4>
+          <p>ロゴ周囲にはXアイコン1個分以上の余白を確保してください。他の要素（テキスト、写真、罫線）は入れません。</p>
+          <h4 style="margin-top: 16px;">最小サイズ</h4>
+          <p>
+            画面上 <code class="tok">ロゴ高 ≥ 20px</code> / 紙面上 <code class="tok">10mm</code> 以上。
+            これを下回る場合はXアイコン単体のみを使用してください。
+          </p>
+        </div>
+      </div>
+
+      <div class="subsection-title">DO / DON'T</div>
+      <div class="rules">
+        <div class="rule do">
+          <span class="mark">✓</span>
+          <div><h5>ダーク背景には白ロゴ（logo-white.png）を使う</h5><p>黒・濃色面ではMono reverseの白ロゴで明確なコントラストを確保。Gold版ロゴは使用しません。</p></div>
+        </div>
+        <div class="rule do">
+          <span class="mark">✓</span>
+          <div><h5>表記は「CommerceX M&amp;A」で統一</h5><p>CとXは大文字、M&amp;Aは大文字。「COMMERCEX M&amp;A」「Commercex M&amp;a」などの表記は使用しません。</p></div>
+        </div>
+        <div class="rule do">
+          <span class="mark">✓</span>
+          <div><h5>Goldアクセントは1画面1点に絞る</h5><p>主役を明確にし、強いメッセージほど周囲に空間を。テキストアクセントとしてGold/Gold Lightを使う場合は背景に応じて選択。</p></div>
+        </div>
+        <div class="rule dont">
+          <span class="mark">✕</span>
+          <div><h5>ロゴを拡大/縮小以外で変形しない</h5><p>傾ける・色替え・グラデ・影付けは禁止。</p></div>
+        </div>
+        <div class="rule dont">
+          <span class="mark">✕</span>
+          <div><h5>写真や柄の上に直置きしない</h5><p>必ず単色面の上、またはCream/Surfaceの確保領域に配置。</p></div>
+        </div>
+        <div class="rule dont">
+          <span class="mark">✕</span>
+          <div><h5>金額の前に「￥」を付けない</h5><p>「8.4億円」「3,200万円」のように、円を後ろに付けて表記します。「￥8.4億」のような前置記号は使用しません。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLOR -->
+    <section class="sec cream" id="color">
+      <div class="sec-head">
+        <div class="sec-num">02 / COLOR</div>
+        <div>
+          <h2 class="sec-title">カラーシステム</h2>
+          <p class="sec-lede">
+            基本はニュートラル（白・黒・グレー）で構成し、Goldを「機会」「信頼」「契約の瞬間」を象徴するアクセントとして注意深く扱います。
+            背景に応じてGold／Gold Lightを使い分けます。
+          </p>
+        </div>
+      </div>
+
+      <div class="subsection-title">BRAND ACCENTS</div>
+      <div class="color-primary-grid">
+        <div class="swatch gold">
+          <div class="chip">
+            <span class="role">Primary Accent / 白背景用</span>
+            <span class="contrast">AA · on #FFF</span>
+          </div>
+          <div class="meta">
+            <span class="name">Gold</span><span class="hex">#C49000</span>
+            <span class="token">--gold</span>
+          </div>
+        </div>
+        <div class="swatch gold-light">
+          <div class="chip">
+            <span class="role">ダーク背景用</span>
+          </div>
+          <div class="meta">
+            <span class="name">Gold Light</span><span class="hex">#F0C830</span>
+            <span class="token">--gold-light</span>
+          </div>
+        </div>
+        <div class="swatch cream">
+          <div class="chip">
+            <span class="role">Gold薄背景</span>
+          </div>
+          <div class="meta">
+            <span class="name">Cream</span><span class="hex">#FFF7DC</span>
+            <span class="token">--cream</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection-title">NEUTRALS</div>
+      <div class="neutral-grid">
+        <div class="swatch black">
+          <div class="chip"><span class="role dark">大見出し / ダーク面</span></div>
+          <div class="meta"><span class="name">Black</span><span class="hex">#111111</span><span class="token">--black</span></div>
+        </div>
+        <div class="swatch dark">
+          <div class="chip"><span class="role dark">本文</span></div>
+          <div class="meta"><span class="name">Dark</span><span class="hex">#333333</span><span class="token">--dark</span></div>
+        </div>
+        <div class="swatch muted">
+          <div class="chip"><span class="role dark">注記・サブ</span></div>
+          <div class="meta"><span class="name">Muted</span><span class="hex">#888888</span><span class="token">--muted</span></div>
+        </div>
+        <div class="swatch surface">
+          <div class="chip"><span class="role">カード背景</span></div>
+          <div class="meta"><span class="name">Surface</span><span class="hex">#F5F5F3</span><span class="token">--surface</span></div>
+        </div>
+      </div>
+      <div class="neutral-grid" style="margin-top:16px;">
+        <div class="swatch border">
+          <div class="chip"><span class="role">区切り線</span></div>
+          <div class="meta"><span class="name">Border</span><span class="hex">#E0E0E0</span><span class="token">--border</span></div>
+        </div>
+        <div class="swatch white">
+          <div class="chip"><span class="role">ページ背景</span></div>
+          <div class="meta"><span class="name">White</span><span class="hex">#FFFFFF</span><span class="token">--white</span></div>
+        </div>
+        <div class="swatch" style="border:1px dashed var(--border); background: transparent;">
+          <div class="chip" style="background: transparent;">
+            <div style="font-size:12px; color: var(--ink-500); line-height: 1.6;">
+              <strong style="color: var(--black);">Gold使用ルール</strong><br>
+              白背景 → <code class="tok">#C49000</code><br>
+              黒・ダーク背景 → <code class="tok">#F0C830</code>
+            </div>
+          </div>
+          <div class="meta"><span class="name">Rule</span><span class="hex">—</span><span class="token">1画面1点まで</span></div>
+        </div>
+        <div class="swatch" style="border:1px dashed var(--border); background: transparent;">
+          <div class="chip" style="background: transparent;">
+            <div style="font-size:12px; color: var(--ink-500); line-height: 1.6;">
+              <strong style="color: var(--black);">コントラスト</strong><br>
+              本文: Dark on White ≥ 12.6 : 1<br>
+              本文: 白 on Black ≥ 18.9 : 1<br>
+              注記: Muted on White ≥ 4.6 : 1
+            </div>
+          </div>
+          <div class="meta"><span class="name">Contrast</span><span class="hex">WCAG AA+</span><span class="token">—</span></div>
+        </div>
+      </div>
+
+      <div class="subsection-title">SEMANTIC (控えめに使用)</div>
+      <div class="semantic-grid">
+        <div class="swatch success"><div class="chip"><span class="role dark">成約 / 成功</span></div><div class="meta"><span class="name">Success</span><span class="hex">#2F8F5E</span><span class="token">--success</span></div></div>
+        <div class="swatch warning"><div class="chip"><span class="role dark">注意</span></div><div class="meta"><span class="name">Warning</span><span class="hex">#C48A1A</span><span class="token">--warning</span></div></div>
+        <div class="swatch danger"><div class="chip"><span class="role dark">エラー / 失注</span></div><div class="meta"><span class="name">Danger</span><span class="hex">#C23B3B</span><span class="token">--danger</span></div></div>
+        <div class="swatch info"><div class="chip"><span class="role dark">情報</span></div><div class="meta"><span class="name">Info</span><span class="hex">#2F6FAE</span><span class="token">--info</span></div></div>
+      </div>
+
+      <div class="subsection-title">COLOR IN USE</div>
+      <div class="usage-grid">
+        <div class="usage-card">
+          <div class="preview on-white">
+            <h5>White Surface / Gold C49000</h5>
+            <div class="big">売却で、<br>次の事業に集中する。</div>
+            <div class="body">EC事業の譲渡を最短3ヶ月で。D2Cに特化したマッチングで、価格と条件の両方を最大化します。</div>
+            <div class="btn-wrap">
+              <a class="btn btn-gold">無料相談を予約 <span class="arrow">→</span></a>
+            </div>
+          </div>
+          <div class="note">BG: White · Body: Dark · Accent: Gold</div>
+        </div>
+        <div class="usage-card">
+          <div class="preview on-black">
+            <h5>Black Surface / Gold Light F0C830</h5>
+            <div class="big" style="color:#fff;">売却で、<br>次の事業に集中する。</div>
+            <div class="body">EC事業の譲渡を最短3ヶ月で。D2Cに特化したマッチングで、価格と条件の両方を最大化します。</div>
+            <div class="btn-wrap">
+              <a class="btn btn-gold-dark">無料相談を予約 <span class="arrow">→</span></a>
+            </div>
+          </div>
+          <div class="note">BG: Black · Body: rgba(#fff, .7) · Accent: Gold Light</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section class="sec" id="type">
+      <div class="sec-head">
+        <div class="sec-num">03 / TYPOGRAPHY</div>
+        <div>
+          <h2 class="sec-title">タイポグラフィ</h2>
+          <p class="sec-lede">
+            日本語・英数字ともに <strong>Noto Sans JP</strong> で統一。見出しは詰め（letter-spacing -.01em）、本文はpalt有効、
+            行間1.8でモノリシックに。<code class="tok">font-feature-settings: "palt"</code> を本文に適用し日本語を美しく。
+          </p>
+        </div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta"><span class="name">EYEBROW</span><span class="specs">Noto Sans JP / Mono mix<br>11px · 500 · ls .22em<br>UPPERCASE</span></div>
+        <div class="type-sample"><div class="t-eyebrow">— M&A OPPORTUNITY / 2026</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">DISPLAY</span><span class="specs">72 / 1.05 · 800<br>ls -.01em<br>表紙・キービジュアル</span></div>
+        <div class="type-sample"><div class="t-display">M&amp;Aを、もっと<br>速く、透明に。</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">H1 — SECTION LEAD</span><span class="specs">48 / 1.2 · 700<br>セクション先頭</span></div>
+        <div class="type-sample"><div class="t-h1">EC・D2Cに特化した、機動力のあるM&amp;A支援</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">H2 — SUB HEAD</span><span class="specs">32 / 1.3 · 700</span></div>
+        <div class="type-sample"><div class="t-h2">売り手と買い手、双方のスピードに合わせて。</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">H3 — CARD TITLE</span><span class="specs">24 / 1.4 · 600</span></div>
+        <div class="type-sample"><div class="t-h3">平均3ヶ月でのクロージング</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">H4 — INLINE LEAD</span><span class="specs">18 / 1.5 · 600</span></div>
+        <div class="type-sample"><div class="t-h4">独自のD2Cバイヤーネットワーク</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">BODY LARGE</span><span class="specs">17 / 1.8 · 400<br>提案書・リード文</span></div>
+        <div class="type-sample"><div class="t-body-lg">CommerceX M&amp;Aは、EC・D2C事業者の譲渡・譲受に特化したM&amp;A支援サービスです。私たちは「事業を磨いてきたオーナーの意思決定を、次のステージへ繋ぐ」ためのプロフェッショナルです。</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">BODY</span><span class="specs">15 / 1.8 · 400<br>標準本文</span></div>
+        <div class="type-sample"><div class="t-body">業界特化のアドバイザーと独自のバイヤーネットワークにより、価格と条件のバランスが取れた成約を短期間で実現します。守秘義務契約後、最短で当週内にトップ面談を設定します。</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">SMALL</span><span class="specs">13 / 1.7 · 400<br>補足・注釈</span></div>
+        <div class="type-sample"><div class="t-small">※ 本資料記載のすべての情報は、当社と事業オーナー様との守秘義務契約に基づき管理されており、第三者への提供は行いません。</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><span class="name">CAPTION</span><span class="specs">11 / 1.6 · 500 · ls .06em<br>図表キャプション</span></div>
+        <div class="type-sample"><div class="t-caption">Fig. 01 — 2021-2025 国内ECセクター M&A成約件数の推移</div></div>
+      </div>
+    </section>
+
+    <!-- SPACING -->
+    <section class="sec cream" id="space">
+      <div class="sec-head">
+        <div class="sec-num">04 / SPACING</div>
+        <div>
+          <h2 class="sec-title">スペーシング</h2>
+          <p class="sec-lede">
+            4pxをベースとする8段階のスケール。コンポーネント内は <code class="tok">--s-2</code>〜<code class="tok">--s-4</code>、
+            セクション間は <code class="tok">--s-7</code>〜<code class="tok">--s-9</code> を標準とします。
+          </p>
+        </div>
+      </div>
+
+      <table class="space-table">
+        <thead>
+          <tr><th style="width: 120px;">TOKEN</th><th style="width: 80px;">PX</th><th style="width: 60%;">SCALE</th><th>USE</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="token-name">--s-1</td><td class="token-value">4</td><td><span class="space-bar" style="width:4px;"></span></td><td>アイコンと文字の間など最小のギャップ</td></tr>
+          <tr><td class="token-name">--s-2</td><td class="token-value">8</td><td><span class="space-bar" style="width:8px;"></span></td><td>タグ/バッジ内側、密なインライン間隔</td></tr>
+          <tr><td class="token-name">--s-3</td><td class="token-value">12</td><td><span class="space-bar" style="width:12px;"></span></td><td>ボタン内部・フォーム要素のpadding</td></tr>
+          <tr><td class="token-name">--s-4</td><td class="token-value">16</td><td><span class="space-bar" style="width:16px;"></span></td><td>標準のgap / card内部</td></tr>
+          <tr><td class="token-name">--s-5</td><td class="token-value">24</td><td><span class="space-bar" style="width:24px;"></span></td><td>カード間・表行間</td></tr>
+          <tr><td class="token-name">--s-6</td><td class="token-value">32</td><td><span class="space-bar" style="width:32px;"></span></td><td>見出しと本文の余白</td></tr>
+          <tr><td class="token-name">--s-7</td><td class="token-value">48</td><td><span class="space-bar" style="width:48px;"></span></td><td>サブセクション間</td></tr>
+          <tr><td class="token-name">--s-8</td><td class="token-value">64</td><td><span class="space-bar" style="width:64px;"></span></td><td>ページ余白・セクション内上下</td></tr>
+          <tr><td class="token-name">--s-9</td><td class="token-value">96</td><td><span class="space-bar" style="width:96px;"></span></td><td>セクション間（標準）</td></tr>
+          <tr><td class="token-name">--s-10</td><td class="token-value">128</td><td><span class="space-bar" style="width:128px;"></span></td><td>Hero上下 / 大きな章切り</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- RADIUS -->
+    <section class="sec" id="radius">
+      <div class="sec-head">
+        <div class="sec-num">05 / RADIUS</div>
+        <div>
+          <h2 class="sec-title">角丸</h2>
+          <p class="sec-lede">
+            M&amp;Aらしい「誠実さ」を担保するため、角丸は抑制的に使用します。
+            大きなコンテナほど丸みを小さく、カードやダイアログは <code class="tok">--r-lg</code> まで。ボタンは <code class="tok">--r-sm</code> で堅実に。
+          </p>
+        </div>
+      </div>
+      <table class="radius-table">
+        <thead>
+          <tr><th style="width:120px;">TOKEN</th><th style="width:80px;">PX</th><th style="width:120px;">SAMPLE</th><th>USE</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="token-name">--r-xs</td><td class="token-value">2</td><td><span class="radius-swatch" style="border-radius:2px;"></span></td><td>タグ・コードチップ</td></tr>
+          <tr><td class="token-name">--r-sm</td><td class="token-value">4</td><td><span class="radius-swatch" style="border-radius:4px;"></span></td><td>ボタン・入力フォーム（標準）</td></tr>
+          <tr><td class="token-name">--r-md</td><td class="token-value">8</td><td><span class="radius-swatch" style="border-radius:8px;"></span></td><td>パネル・ポップオーバー</td></tr>
+          <tr><td class="token-name">--r-lg</td><td class="token-value">12</td><td><span class="radius-swatch" style="border-radius:12px;"></span></td><td>カード・テーブルラッパ</td></tr>
+          <tr><td class="token-name">--r-xl</td><td class="token-value">20</td><td><span class="radius-swatch" style="border-radius:20px;"></span></td><td>大型のヒーローカード</td></tr>
+          <tr><td class="token-name">--r-pill</td><td class="token-value">999</td><td><span class="radius-swatch" style="border-radius:999px; width:72px;"></span></td><td>ピル型バッジ・タグ</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SHADOW -->
+    <section class="sec cream" id="shadow">
+      <div class="sec-head">
+        <div class="sec-num">06 / SHADOW</div>
+        <div>
+          <h2 class="sec-title">シャドウ</h2>
+          <p class="sec-lede">
+            誇張せず、紙面の層を表現するための薄い影。Goldシャドウはキーアクション（「面談予約」など）1つに限定します。
+          </p>
+        </div>
+      </div>
+
+      <table class="shadow-table">
+        <thead>
+          <tr><th style="width:120px;">TOKEN</th><th style="width:120px;">SAMPLE</th><th>VALUE</th><th>USE</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="token-name">--sh-0</td>
+            <td><span class="shadow-swatch" style="box-shadow: var(--sh-0);"></span></td>
+            <td class="token-value">0 0 0 1px rgba(17,17,17,.06)</td>
+            <td>極薄の縁取り（borderの代わり）</td>
+          </tr>
+          <tr>
+            <td class="token-name">--sh-1</td>
+            <td><span class="shadow-swatch" style="box-shadow: var(--sh-1);"></span></td>
+            <td class="token-value">0 1px 2px rgba(17,17,17,.06) + 0 1px 1px rgba(17,17,17,.04)</td>
+            <td>リスト行・下位のカード</td>
+          </tr>
+          <tr>
+            <td class="token-name">--sh-2</td>
+            <td><span class="shadow-swatch" style="box-shadow: var(--sh-2);"></span></td>
+            <td class="token-value">0 4px 12px rgba(17,17,17,.08) + 0 1px 2px rgba(17,17,17,.04)</td>
+            <td>カード・浮き要素（標準）</td>
+          </tr>
+          <tr>
+            <td class="token-name">--sh-3</td>
+            <td><span class="shadow-swatch" style="box-shadow: var(--sh-3);"></span></td>
+            <td class="token-value">0 12px 32px rgba(17,17,17,.12) + 0 2px 6px rgba(17,17,17,.06)</td>
+            <td>モーダル・ドロップダウン</td>
+          </tr>
+          <tr>
+            <td class="token-name">--sh-gold</td>
+            <td><span class="shadow-swatch" style="box-shadow: var(--sh-gold);"></span></td>
+            <td class="token-value">0 8px 24px rgba(196,144,0,.25)</td>
+            <td>メインCTA用の特別シャドウ（1画面1点）</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="sec" id="components">
+      <div class="sec-head">
+        <div class="sec-num">07 / COMPONENTS</div>
+        <div>
+          <h2 class="sec-title">ボタン（最小セット）</h2>
+          <p class="sec-lede">
+            デザインシステムの範囲外ですが、トークンの実用例として最小限のボタンセットを提示します。
+            角丸は <code class="tok">--r-sm</code>、shadowは<code class="tok">--sh-gold</code>をPrimary CTAのみに。
+          </p>
+        </div>
+      </div>
+
+      <div class="preview-box">
+        <div style="font-family:var(--font-mono); font-size: 10px; letter-spacing: .18em; color: var(--muted); margin-bottom: 16px;">ON WHITE</div>
+        <div class="btn-row">
+          <a class="btn btn-gold" style="box-shadow: var(--sh-gold);">無料相談を予約 <span class="arrow">→</span></a>
+          <a class="btn btn-primary">資料をダウンロード</a>
+          <a class="btn btn-ghost">事例を見る</a>
+        </div>
+      </div>
+      <div class="preview-box dark" style="margin-top: 12px;">
+        <div style="font-family:var(--font-mono); font-size: 10px; letter-spacing: .18em; color: rgba(255,255,255,.5); margin-bottom: 16px;">ON BLACK</div>
+        <div class="btn-row">
+          <a class="btn btn-gold-dark">無料相談を予約 <span class="arrow">→</span></a>
+          <a class="btn" style="background: transparent; color:#fff; border-color: rgba(255,255,255,.3);">資料をダウンロード</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPLY -->
+    <section class="sec dark" id="apply">
+      <div class="sec-head">
+        <div class="sec-num">08 / IN USE</div>
+        <div>
+          <h2 class="sec-title">営業資料での適用例</h2>
+          <p class="sec-lede">
+            トークンを組み合わせた、提案書・営業資料の表紙パターン。白基調で誠実さを、ダーク基調でプレゼンスを表現します。
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-mock-row">
+        <!-- Light doc -->
+        <div class="doc-mock">
+          <div class="doc-page">
+            <div class="doc-header">
+              <img src="brand_assets/logo.png" alt="">
+              <div class="meta">PROPOSAL · 2026.04 · CONFIDENTIAL</div>
+            </div>
+            <div class="doc-title">
+              <div class="eyebrow">— ご提案資料 / Sell-side</div>
+              <h2>ECブランド譲渡に向けた<br><span class="gold">マッチング戦略</span>のご提案</h2>
+              <p>
+                貴社事業の価値を最大化するバイヤー候補と、想定取引条件を定量化したバリュエーション試算をまとめました。
+              </p>
+              <div class="kpis">
+                <div class="kpi"><div class="label">想定バリュエーション</div><div class="val">8.4<span class="unit">億円</span></div></div>
+                <div class="kpi"><div class="label">想定バイヤー数</div><div class="val">28<span class="unit">社</span></div></div>
+                <div class="kpi"><div class="label">想定クロージング</div><div class="val">3<span class="unit">ヶ月</span></div></div>
+              </div>
+            </div>
+            <div class="footer">
+              <span>CommerceX M&A, Inc.</span>
+              <span>01 / 24</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark doc -->
+        <div class="doc-mock dark">
+          <div class="doc-page">
+            <div class="doc-header">
+              <img src="brand_assets/logo-white.png" alt="">
+              <div class="meta">INVESTMENT MEMO · 2026.04</div>
+            </div>
+            <div class="doc-title">
+              <div class="eyebrow" style="color: var(--gold-light);">— INVESTMENT OPPORTUNITY</div>
+              <h2>D2Cビューティーブランド<br><span class="gold">Project Aurum</span></h2>
+              <p>
+                売上高 10億円規模の高粗利D2Cブランド。ロイヤルカスタマー比率 58%、
+                直近3年CAGR +47%。投資家向けティザーメモ。
+              </p>
+              <div class="kpis">
+                <div class="kpi"><div class="label">ARR</div><div class="val">10.2<span class="unit">億円</span></div></div>
+                <div class="kpi"><div class="label">GROSS MARGIN</div><div class="val">71<span class="unit">%</span></div></div>
+                <div class="kpi"><div class="label">CAGR (3Y)</div><div class="val">+47<span class="unit">%</span></div></div>
+              </div>
+            </div>
+            <div class="footer">
+              <span>CommerceX M&A, Inc.</span>
+              <span>01 / 18</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site">
+      <div class="left">
+        <img src="brand_assets/logo-white.png" alt="">
+        <div>DESIGN SYSTEM V1 · 2026.04</div>
+      </div>
+      <div>© CommerceX M&amp;A, Inc.</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>
