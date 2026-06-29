@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CXBASE Category Visual Catalog</title>
+  <style>
+    :root {
+      --black: #111111;
+      --white: #ffffff;
+      --yellow: #f4b400;
+      --yellow-dark: #d9a441;
+      --bg: #f7f7f4;
+      --card: #fafaf7;
+      --line: #e6e2d8;
+      --muted: #6f6a60;
+      --mint: #38d9a9;
+      --cyan: #4cc9f0;
+      --shadow: 0 14px 34px rgba(17, 17, 17, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--black);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+      letter-spacing: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .brand-mark {
+      width: 20px;
+      height: 20px;
+      border: 4px solid var(--yellow);
+      transform: rotate(45deg);
+    }
+
+    .nav-note {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 34px 28px 56px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 26px;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    .hero-copy p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .rules {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .rules h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .rule-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .rule-list li {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      margin-top: 5px;
+      border-radius: 999px;
+      background: var(--yellow);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 22px 0 18px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: var(--white);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .tab.active {
+      border-color: var(--black);
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .section {
+      margin-top: 26px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 0 0 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(174px, 1fr));
+      gap: 14px;
+    }
+
+    .visual-tile {
+      min-height: 214px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      box-shadow: 0 10px 24px rgba(17, 17, 17, 0.045);
+      display: grid;
+      grid-template-rows: 38px 1fr 26px;
+      gap: 10px;
+    }
+
+    .nameplate {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 10px 9px;
+      background: linear-gradient(180deg, #050505 0%, #161616 100%);
+      border-radius: 5px 5px 2px 2px;
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.16;
+      text-align: center;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .nameplate::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -3px;
+      height: 3px;
+      background: var(--yellow);
+      border-radius: 0 0 2px 2px;
+    }
+
+    .icon-zone {
+      min-height: 118px;
+      display: grid;
+      place-items: center;
+      padding: 12px 0 6px;
+    }
+
+    .icon-zone svg {
+      width: 90px;
+      height: 90px;
+      overflow: visible;
+    }
+
+    .icon-zone .stroke {
+      fill: none;
+      stroke: var(--black);
+      stroke-width: 3.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .chip {
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--black);
+      background: var(--card);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 6px;
+    }
+
+    .variant-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .variant {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .variant h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .variant p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .variant-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">CXBASE Category Visual System / Non-name deal thumbnails</div>
+    <div class="nav">
+      <div class="brand"><span class="brand-mark"></span><span>CXBASE</span></div>
+      <div class="nav-note">カテゴリ名・アイコン・下部タグを分離した量産用サンプル</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>案件サムネイル用カテゴリービジュアル案</h1>
+        <p>
+          ノンネーム案件で使う前提のため、実写・実在ロゴ・商品名は使わず、黒ラベルと黄色ラインでカテゴリ名を強く読ませる設計です。
+          業種追加時は、カテゴリ名、代表アイコン、下部タグを差し替えるだけで同じUI品質を保てます。
+        </p>
+      </div>
+      <aside class="rules">
+        <h2>運用ルール</h2>
+        <ul class="rule-list">
+          <li><span class="dot"></span><span>画像で特定されないよう、写真ではなく線画アイコンを使う</span></li>
+          <li><span class="dot"></span><span>黒ラベルは必ずカテゴリ名を入れ、一覧で一瞬で読めるようにする</span></li>
+          <li><span class="dot"></span><span>下部タグは業種理解を助ける補助情報に留め、案件固有情報は入れない</span></li>
+          <li><span class="dot"></span><span>色は黒・白・黄色を基本にし、カテゴリ色は原則使わない</span></li>
+        </ul>
+      </aside>
+    </section>
+
+    <div class="toolbar">
+      <div class="tabs">
+        <button class="tab active">全カテゴリ</button>
+        <button class="tab">ブランド</button>
+        <button class="tab">販路</button>
+        <button class="tab">支援会社</button>
+        <button class="tab">物流・運営</button>
+      </div>
+      <div class="count" id="count"></div>
+    </div>
+
+    <div id="catalog"></div>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>拡張時の型</h2>
+        <span>カテゴリが増えたときの判断軸</span>
+      </div>
+      <div class="variant-row">
+        <div class="variant">
+          <h3>カテゴリ名を最優先</h3>
+          <p>買い手は画像の雰囲気より、まず「自分の探している業種か」を判断します。黒ラベルは最も強い識別子として固定します。</p>
+        </div>
+        <div class="variant">
+          <h3>アイコンは抽象化</h3>
+          <p>具体的な商品形状に寄せすぎると特定リスクが上がります。カテゴリーを連想できる程度の汎用線画に留めます。</p>
+        </div>
+        <div class="variant">
+          <h3>下部タグは2つまで</h3>
+          <p>タグを増やすとカードが散らかります。モデルや販路など、買い手の一次判断に効くものだけに絞ります。</p>
+        </div>
+        <div class="variant">
+          <h3>案件固有情報は入れない</h3>
+          <p>売上・利益・価格・倍率はカード本文側に置き、サムネイルはカテゴリ識別に専念させる方が運用しやすくなります。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const groups = [
+      {
+        title: "EC / D2Cブランド",
+        note: "商品カテゴリを一瞬で見分けるための基本セット",
+        items: [
+          ["美容D2C", "beauty", ["D2C", "定期購入"]],
+          ["健康食品EC", "health", ["EC", "定期購入"]],
+          ["アパレルEC", "apparel", ["EC", "D2C"]],
+          ["ペット用品EC", "pet", ["EC", "リピート"]],
+          ["食品EC", "food", ["EC", "冷凍/常温"]],
+          ["ライフスタイル", "lifestyle", ["D2C", "ギフト"]],
+          ["ベビー用品EC", "baby", ["EC", "ファミリー"]],
+          ["ホーム用品EC", "home", ["EC", "生活雑貨"]],
+          ["アウトドアEC", "outdoor", ["EC", "趣味"]],
+          ["スポーツEC", "sports", ["EC", "用品"]],
+          ["ホビーEC", "hobby", ["EC", "ファン層"]],
+          ["家電EC", "electronics", ["EC", "ガジェット"]],
+          ["ジュエリーEC", "jewelry", ["EC", "高単価"]],
+          ["家具EC", "furniture", ["EC", "大型配送"]],
+          ["酒類EC", "drink", ["EC", "嗜好品"]],
+          ["コーヒーEC", "coffee", ["EC", "定期購入"]]
+        ]
+      },
+      {
+        title: "販路 / 販売モデル",
+        note: "同じ商品カテゴリでも買い手の見方が変わる販路・モデル系",
+        items: [
+          ["モールEC", "storefront", ["EC", "モール"]],
+          ["自社EC", "cart", ["D2C", "CRM"]],
+          ["越境EC", "globe", ["EC", "海外"]],
+          ["サブスクEC", "subscription", ["定期", "LTV"]],
+          ["B2B EC", "briefcase", ["B2B", "卸"]],
+          ["卸・問屋", "wholesale", ["B2B", "在庫"]],
+          ["メーカー直販", "factory", ["製造", "D2C"]],
+          ["店舗連動EC", "store", ["店舗", "EC"]],
+          ["ギフトEC", "gift", ["EC", "贈答"]],
+          ["中古・リユース", "reuse", ["EC", "在庫"]],
+          ["予約販売", "calendar", ["EC", "受注"]],
+          ["会員制EC", "membership", ["会員", "CRM"]]
+        ]
+      },
+      {
+        title: "EC支援 / SaaS / マーケティング",
+        note: "事業会社ではなく支援会社・SaaS案件に使うセット",
+        items: [
+          ["EC支援", "support", ["支援", "SaaS"]],
+          ["広告運用", "megaphone", ["広告", "運用"]],
+          ["CRM/MA", "nodes", ["CRM", "LTV"]],
+          ["制作会社", "design", ["制作", "EC"]],
+          ["SNS運用", "chat", ["SNS", "運用"]],
+          ["インフルエンサー", "spark", ["SNS", "PR"]],
+          ["ライブコマース", "video", ["配信", "EC"]],
+          ["分析ツール", "analytics", ["分析", "BI"]],
+          ["レビュー支援", "starless", ["UGC", "CRM"]],
+          ["決済SaaS", "payment", ["決済", "SaaS"]],
+          ["不正対策", "shield", ["審査", "SaaS"]],
+          ["カートアプリ", "plugin", ["アプリ", "EC"]]
+        ]
+      },
+      {
+        title: "物流 / CS / オペレーション",
+        note: "商品ではなく運営基盤を示す案件向け",
+        items: [
+          ["物流EC", "logistics", ["物流", "フルフィル"]],
+          ["倉庫運営", "warehouse", ["在庫", "保管"]],
+          ["発送代行", "truck", ["配送", "代行"]],
+          ["CS代行", "headset", ["CS", "外注"]],
+          ["コールセンター", "phone", ["CS", "電話"]],
+          ["在庫管理", "inventory", ["在庫", "SaaS"]],
+          ["受発注管理", "orders", ["受発注", "B2B"]],
+          ["OEM/ODM", "factory", ["製造", "OEM"]],
+          ["パッケージ", "package", ["包装", "制作"]],
+          ["検品・品質管理", "check", ["検品", "品質"]],
+          ["貿易・輸入", "ship", ["輸入", "商社"]],
+          ["モール運営代行", "operator", ["運営", "モール"]]
+        ]
+      },
+      {
+        title: "汎用 / 未分類",
+        note: "初回ヒアリングでカテゴリが固まりきっていない案件の仮置き",
+        items: [
+          ["成長EC", "growth", ["成長", "黒字"]],
+          ["小規模EC", "small", ["小規模", "運営軽い"]],
+          ["高収益EC", "profit", ["高利益", "黒字"]],
+          ["地域ブランド", "pin", ["地域", "ブランド"]],
+          ["ニッチEC", "target", ["ニッチ", "専門"]],
+          ["その他EC", "box", ["EC", "その他"]]
+        ]
+      }
+    ];
+
+    const iconSvg = (content) => `<svg viewBox="0 0 96 96" aria-hidden="true">${content}</svg>`;
+    const icons = {
+      beauty: iconSvg(`<path class="stroke" d="M36 33h24M42 22h12v11H42zM35 42c0-5 4-9 9-9h8c5 0 9 4 9 9v36H35zM44 55h8M44 65h8"/>`),
+      health: iconSvg(`<g transform="rotate(-30 35 38)"><rect class="stroke" x="18" y="29" width="34" height="18" rx="9"/><path class="stroke" d="M35 29v18"/></g><g transform="rotate(-30 62 60)"><rect class="stroke" x="45" y="51" width="34" height="18" rx="9"/><path class="stroke" d="M62 51v18"/></g>`),
+      apparel: iconSvg(`<path class="stroke" d="M31 35l17-8 17 8 10 16-12 7-4-8v29H37V50l-4 8-12-7zM39 34c4 4 14 4 18 0"/>`),
+      pet: iconSvg(`<circle class="stroke" cx="32" cy="35" r="7"/><circle class="stroke" cx="48" cy="28" r="8"/><circle class="stroke" cx="64" cy="35" r="7"/><path class="stroke" d="M31 67c0-12 8-20 17-20s17 8 17 20c0 9-7 12-13 8-3-2-5-2-8 0-6 4-13 1-13-8z"/>`),
+      food: iconSvg(`<path class="stroke" d="M30 18v29M22 18v29M38 18v29M22 47c0 7 16 7 16 0M30 47v32M63 18c11 12 13 29 0 40v21M63 18v61"/>`),
+      lifestyle: iconSvg(`<path class="stroke" d="M22 49l26-24 26 24M30 47v31h36V47M43 78V61h10v17"/>`),
+      baby: iconSvg(`<path class="stroke" d="M39 19h18l-4 13H43zM36 32h24v9c0 6-5 10-12 10s-12-4-12-10zM34 51h28v25c0 4-3 7-7 7H41c-4 0-7-3-7-7zM43 64h10M43 73h10"/>`),
+      home: iconSvg(`<path class="stroke" d="M22 55h50c7 0 11 5 11 12v12H13V67c0-7 4-12 9-12zM24 55V41c0-7 5-11 12-11h24c7 0 12 4 12 11v14M24 66h48"/>`),
+      outdoor: iconSvg(`<path class="stroke" d="M15 76l24-43 16 27 10-16 18 32zM34 53l5 6 8-9M65 44l6 10"/>`),
+      sports: iconSvg(`<path class="stroke" d="M17 38h11l6 10-6 10H17l-6-10zM68 38h11l6 10-6 10H68l-6-10zM34 42h28v12H34zM28 48h6M62 48h6"/>`),
+      hobby: iconSvg(`<path class="stroke" d="M22 28h22c0 8 9 8 9 0h21v21c-8 0-8 10 0 10v21H53c0-8-9-8-9 0H22V59c8 0 8-10 0-10z"/>`),
+      electronics: iconSvg(`<rect class="stroke" x="21" y="23" width="54" height="41" rx="6"/><path class="stroke" d="M39 77h18M48 64v13M34 42h28M34 52h18"/>`),
+      jewelry: iconSvg(`<path class="stroke" d="M25 29h46l10 17-33 34-33-34zM25 29l23 51M71 29L48 80M15 46h66M36 29l-8 17M60 29l8 17"/>`),
+      furniture: iconSvg(`<path class="stroke" d="M34 20h28v30H34zM30 51h36M38 51l-9 29M58 51l9 29M26 80h44"/>`),
+      drink: iconSvg(`<path class="stroke" d="M34 16h18M38 16v18l-7 9v38h28V43l-7-9V16M66 43h17l-5 36H70zM38 56h15M70 55h9"/>`),
+      coffee: iconSvg(`<path class="stroke" d="M23 39h43v23c0 11-7 18-20 18h-3c-13 0-20-7-20-18zM66 44h8c7 0 10 5 8 11-2 7-8 10-16 8M35 22c-5 5 5 8 0 13M49 22c-5 5 5 8 0 13"/>`),
+      storefront: iconSvg(`<path class="stroke" d="M18 35h60l-7-17H25zM22 35v43h52V35M30 78V55h18v23M56 55h12v13H56zM18 35c0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0"/>`),
+      cart: iconSvg(`<path class="stroke" d="M17 22h11l9 39h31l9-27H34M40 78a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM68 78a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/>`),
+      globe: iconSvg(`<circle class="stroke" cx="48" cy="48" r="31"/><path class="stroke" d="M17 48h62M48 17c11 12 11 50 0 62M48 17c-11 12-11 50 0 62"/>`),
+      subscription: iconSvg(`<rect class="stroke" x="21" y="24" width="54" height="52" rx="5"/><path class="stroke" d="M21 40h54M34 17v13M62 17v13M37 57h22M37 68h13"/>`),
+      briefcase: iconSvg(`<rect class="stroke" x="18" y="31" width="60" height="44" rx="5"/><path class="stroke" d="M38 31v-9h20v9M18 48h60M43 48v8h10v-8"/>`),
+      wholesale: iconSvg(`<path class="stroke" d="M17 46h24v27H17zM55 46h24v27H55zM36 24h24v27H36zM29 46v-8h14M67 46v-8H53"/>`),
+      factory: iconSvg(`<path class="stroke" d="M17 78V43l20 13V43l20 13V26h22v52zM62 26h12M26 66h9M45 66h9M64 66h9"/>`),
+      store: iconSvg(`<path class="stroke" d="M20 35h56l-6-16H26zM25 35v43h46V35M32 78V55h15v23M55 55h11v13H55zM20 35c0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0"/>`),
+      gift: iconSvg(`<rect class="stroke" x="20" y="38" width="56" height="41" rx="3"/><path class="stroke" d="M48 38v41M20 52h56M38 38c-16-6-8-24 10 0M58 38c16-6 8-24-10 0"/>`),
+      reuse: iconSvg(`<path class="stroke" d="M25 34c8-12 26-16 40-6l7 5M72 33V18M72 33H57M71 62c-8 12-26 16-40 6l-7-5M24 63v15M24 63h15"/>`),
+      calendar: iconSvg(`<rect class="stroke" x="21" y="24" width="54" height="52" rx="5"/><path class="stroke" d="M21 40h54M34 17v13M62 17v13M36 57h8M52 57h8M36 67h18"/>`),
+      membership: iconSvg(`<rect class="stroke" x="18" y="28" width="60" height="40" rx="6"/><circle class="stroke" cx="36" cy="48" r="8"/><path class="stroke" d="M51 43h16M51 53h12M28 78h40"/>`),
+      support: iconSvg(`<rect class="stroke" x="20" y="22" width="56" height="42" rx="5"/><path class="stroke" d="M38 78h20M48 64v14M34 52V40M48 52V33M62 52V44"/>`),
+      megaphone: iconSvg(`<path class="stroke" d="M22 55h15l32 14V27L37 41H22zM37 55l8 22H32l-6-22M76 40l8-6M78 55h10M76 70l8 6"/>`),
+      nodes: iconSvg(`<circle class="stroke" cx="26" cy="48" r="9"/><circle class="stroke" cx="65" cy="27" r="9"/><circle class="stroke" cx="67" cy="69" r="9"/><path class="stroke" d="M34 44l23-13M35 52l24 13"/>`),
+      design: iconSvg(`<path class="stroke" d="M22 70l33-33 14 14-33 33H22zM56 36l8-8 14 14-8 8M22 70l14 14"/>`),
+      chat: iconSvg(`<path class="stroke" d="M20 27h56v34H43L27 75V61h-7zM34 44h28M34 53h18"/>`),
+      spark: iconSvg(`<path class="stroke" d="M48 17l7 21 21 7-21 7-7 21-7-21-21-7 21-7zM72 20l3 9 9 3-9 3-3 9-3-9-9-3 9-3zM25 61l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/>`),
+      video: iconSvg(`<rect class="stroke" x="18" y="30" width="46" height="36" rx="5"/><path class="stroke" d="M64 43l18-10v30L64 53zM36 40l14 8-14 8z"/>`),
+      analytics: iconSvg(`<path class="stroke" d="M18 75h60M25 64V46M43 64V30M61 64V39M24 33l17 10 18-19 16 10"/>`),
+      starless: iconSvg(`<rect class="stroke" x="21" y="26" width="54" height="42" rx="5"/><path class="stroke" d="M31 41h34M31 53h22M31 68l-9 10v-10M62 62l7 7 12-15"/>`),
+      payment: iconSvg(`<rect class="stroke" x="18" y="28" width="60" height="42" rx="5"/><path class="stroke" d="M18 42h60M31 58h15M58 58h9"/>`),
+      shield: iconSvg(`<path class="stroke" d="M48 15l28 11v20c0 18-10 31-28 38-18-7-28-20-28-38V26zM34 49l10 10 19-22"/>`),
+      plugin: iconSvg(`<path class="stroke" d="M35 20v18M61 20v18M28 38h40v16c0 11-9 20-20 20s-20-9-20-20zM48 74v10M36 51h24"/>`),
+      logistics: iconSvg(`<path class="stroke" d="M15 37h43v29H15zM58 48h13l10 10v8H58zM28 77a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM69 77a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/>`),
+      warehouse: iconSvg(`<path class="stroke" d="M16 38l32-20 32 20v42H16zM28 80V50h40v30M36 50v30M48 50v30M60 50v30"/>`),
+      truck: iconSvg(`<path class="stroke" d="M16 38h42v28H16zM58 49h15l9 9v8H58zM29 77a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM70 77a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/>`),
+      headset: iconSvg(`<path class="stroke" d="M21 54v-7c0-17 11-29 27-29s27 12 27 29v7M21 54h13v21H21zM62 54h13v21H62zM62 75c-1 8-8 11-17 11h-5"/>`),
+      phone: iconSvg(`<path class="stroke" d="M36 16h24v64H36zM43 25h10M44 71h8M66 32c8 9 8 23 0 32M74 25c12 16 12 31 0 46"/>`),
+      inventory: iconSvg(`<path class="stroke" d="M20 25h24v24H20zM52 25h24v24H52zM20 57h24v24H20zM52 57h24v24H52z"/>`),
+      orders: iconSvg(`<path class="stroke" d="M27 17h42v62H27zM36 31h24M36 44h24M36 57h16M22 32l-6 6-4-4M22 45l-6 6-4-4M22 58l-6 6-4-4"/>`),
+      package: iconSvg(`<path class="stroke" d="M20 34l28-16 28 16v32L48 82 20 66zM20 34l28 16 28-16M48 50v32"/>`),
+      check: iconSvg(`<rect class="stroke" x="20" y="22" width="56" height="50" rx="5"/><path class="stroke" d="M34 35h22M34 49h28M34 63h16M57 62l7 7 14-17"/>`),
+      ship: iconSvg(`<path class="stroke" d="M19 56h58l-10 20H29zM31 56V35h28v21M39 35V22h14v13M17 80c7-5 13 5 20 0 7-5 13 5 20 0 7-5 13 5 20 0"/>`),
+      operator: iconSvg(`<path class="stroke" d="M18 35h60l-7-16H25zM24 35v38h48V35M34 73V55h12v18M55 55h11v10H55zM18 35c0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0 0 8 10 8 10 0"/>`),
+      growth: iconSvg(`<path class="stroke" d="M18 76h62M27 64V49M45 64V35M63 64V23M23 33l18 8 18-21 17 8"/>`),
+      small: iconSvg(`<path class="stroke" d="M24 35l24-14 24 14v28L48 77 24 63zM24 35l24 14 24-14M48 49v28M60 22l10 6M26 28l10-6"/>`),
+      profit: iconSvg(`<circle class="stroke" cx="48" cy="48" r="30"/><path class="stroke" d="M34 33l14 18 14-18M38 51h20M38 61h20M48 51v22"/>`),
+      pin: iconSvg(`<path class="stroke" d="M48 82S24 58 24 39c0-14 10-25 24-25s24 11 24 25c0 19-24 43-24 43z"/><circle class="stroke" cx="48" cy="39" r="8"/>`),
+      target: iconSvg(`<circle class="stroke" cx="48" cy="48" r="30"/><circle class="stroke" cx="48" cy="48" r="17"/><circle class="stroke" cx="48" cy="48" r="5"/>`),
+      box: iconSvg(`<path class="stroke" d="M21 33l27-15 27 15v31L48 79 21 64zM21 33l27 15 27-15M48 48v31"/>`)
+    };
+
+    const catalog = document.getElementById("catalog");
+    const count = document.getElementById("count");
+    const total = groups.reduce((sum, group) => sum + group.items.length, 0);
+    count.textContent = `${total}カテゴリのサンプル`;
+
+    function tile([name, icon, chips]) {
+      return `
+        <article class="visual-tile">
+          <div class="nameplate">${name}</div>
+          <div class="icon-zone">${icons[icon] || icons.box}</div>
+          <div class="chips">
+            <span class="chip">${chips[0]}</span>
+            <span class="chip">${chips[1]}</span>
+          </div>
+        </article>
+      `;
+    }
+
+    catalog.innerHTML = groups.map(group => `
+      <section class="section">
+        <div class="section-title">
+          <h2>${group.title}</h2>
+          <span>${group.note}</span>
+        </div>
+        <div class="grid">${group.items.map(tile).join("")}</div>
+      </section>
+    `).join("");
+  </script>
+</body>
+</html>
