@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CXBASE UI Design Delivery</title>
+  <style>
+    :root {
+      --black: #111111;
+      --white: #ffffff;
+      --yellow: #f4b400;
+      --gold: #d9a441;
+      --navy: #061426;
+      --cyan: #4cc9f0;
+      --mint: #38d9a9;
+      --bg: #f7f7f4;
+      --line: #e6e2d8;
+      --text-muted: #6f6a60;
+      --card: #fffefa;
+      --shadow: 0 18px 50px rgba(17, 17, 17, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--black);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--black);
+      color: var(--white);
+      border-bottom: 4px solid var(--yellow);
+    }
+
+    .topbar {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 18px;
+      height: 18px;
+      border: 4px solid var(--yellow);
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .meta {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 44px 28px 72px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.5fr);
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 18px 0 0;
+      max-width: 780px;
+      color: var(--text-muted);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .summary {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .summary h2 {
+      margin: 0 0 14px;
+      font-size: 16px;
+    }
+
+    .token-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .token {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      flex: 0 0 auto;
+    }
+
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 30px 0 44px;
+    }
+
+    .toc a {
+      text-decoration: none;
+      color: var(--black);
+      border: 1px solid var(--line);
+      background: var(--white);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .section {
+      margin-top: 54px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .section-note {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 66px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 900;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--black);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge.buyer {
+      background: var(--black);
+      color: var(--yellow);
+    }
+
+    .badge.seller {
+      background: #fbf4df;
+      color: #7a5b0c;
+      border: 1px solid #ead49c;
+    }
+
+    .badge.admin {
+      background: var(--navy);
+      color: var(--cyan);
+    }
+
+    .shot {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #eee;
+    }
+
+    .card-foot {
+      padding: 12px 16px 16px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .phase-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .wide-card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .wide-head {
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wide-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .number {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 13px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .wide-title h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--text-muted);
+      padding: 28px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .grid,
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head,
+      .wide-head,
+      .topbar {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .meta {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand"><span class="brand-mark"></span><span>CXBASE UI Design Delivery</span></div>
+      <div class="meta">CommerceX M&amp;A / CXBASE<br>2026-07-03</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>CXBASE UIデザイン納品セット</h1>
+        <p class="lead">
+          買い手・売り手・CXMA運営者のロール別ダッシュボードと、Phase 1 / Phase 2で必要な主要画面をまとめた共有用ギャラリーです。
+          役割ごとに色の重心を変えつつ、CXBASEの黒・白・黄のブランド基調は維持しています。
+        </p>
+      </div>
+      <aside class="summary">
+        <h2>ロール別カラー方針</h2>
+        <div class="token-grid">
+          <div class="token"><span>買い手: 黒 × 黄</span><span class="swatch" style="background:#111111"></span></div>
+          <div class="token"><span>売り手: ゴールド × 白</span><span class="swatch" style="background:#d9a441"></span></div>
+          <div class="token"><span>Admin: 濃紺 × シアン</span><span class="swatch" style="background:#061426"></span></div>
+        </div>
+      </aside>
+    </section>
+
+    <nav class="toc" aria-label="ページ内リンク">
+      <a href="#roles">ロール別ダッシュボード</a>
+      <a href="#phase1">Phase 1</a>
+      <a href="#phase2">Phase 2</a>
+    </nav>
+
+    <section id="roles" class="section">
+      <div class="section-head">
+        <h2>ロール別ダッシュボード</h2>
+        <div class="section-note">買い手、売り手、Adminで一瞬で見分けられる色設計</div>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="card-head">
+            <h3 class="card-title">買い手ダッシュボード</h3>
+            <span class="badge buyer">Buyer</span>
+          </div>
+          <img class="shot" src="images/01_buyer_black_dashboard.png" alt="買い手ダッシュボード">
+          <div class="card-foot">黒系。案件探索、比較、開示依頼の意思決定を強く見せる。</div>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <h3 class="card-title">売り手ダッシュボード</h3>
+            <span class="badge seller">Seller</span>
+          </div>
+          <img class="shot" src="images/02_seller_gold_dashboard.png" alt="売り手ダッシュボード">
+          <div class="card-foot">ゴールド系。開示許可、相談、買い手反応の安心感を出す。</div>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <h3 class="card-title">Adminダッシュボード</h3>
+            <span class="badge admin">Admin</span>
+          </div>
+          <img class="shot" src="images/03_admin_deep_navy_dashboard.png" alt="Adminダッシュボード">
+          <div class="card-foot">濃紺系。管理、監査、オペレーションの緊張感を出す。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="phase1" class="section">
+      <div class="section-head">
+        <h2>Phase 1</h2>
+        <div class="section-note">MVPで必須の主要画面</div>
+      </div>
+      <div class="phase-list">
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">01</span><h3>公開案件一覧</h3></div><span class="badge">Public</span></div>
+          <img class="shot" src="images/01_public_deal_list.png" alt="公開案件一覧">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">02</span><h3>公開案件詳細プレビュー</h3></div><span class="badge">Public</span></div>
+          <img class="shot" src="images/02_public_deal_preview.png" alt="公開案件詳細プレビュー">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">03</span><h3>会員登録 / ログイン</h3></div><span class="badge">Auth</span></div>
+          <img class="shot" src="images/03_signup_login.png" alt="会員登録ログイン">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">04</span><h3>買いニーズ登録</h3></div><span class="badge buyer">Buyer</span></div>
+          <img class="shot" src="images/04_buyer_needs_wizard.png" alt="買いニーズ登録">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">05</span><h3>開示依頼</h3></div><span class="badge buyer">Buyer</span></div>
+          <img class="shot" src="images/05_disclosure_request.png" alt="開示依頼">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">06</span><h3>売り手開示許可</h3></div><span class="badge seller">Seller</span></div>
+          <img class="shot" src="images/06_seller_disclosure_permission.png" alt="売り手開示許可">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">07</span><h3>売り手向け案件掲載相談</h3></div><span class="badge seller">Seller</span></div>
+          <img class="shot" src="images/07_seller_listing_consultation.png" alt="売り手向け案件掲載相談">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">08</span><h3>CXMA運営者 案件管理</h3></div><span class="badge admin">Admin</span></div>
+          <img class="shot" src="images/08_admin_deal_management.png" alt="CXMA運営者 案件管理">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">09</span><h3>CXMA運営者 開示依頼管理</h3></div><span class="badge admin">Admin</span></div>
+          <img class="shot" src="images/09_admin_disclosure_requests.png" alt="CXMA運営者 開示依頼管理">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">10</span><h3>運営会社 / 法務情報</h3></div><span class="badge">Legal</span></div>
+          <img class="shot" src="images/10_legal_company_info.png" alt="運営会社 法務情報">
+        </article>
+      </div>
+    </section>
+
+    <section id="phase2" class="section">
+      <div class="section-head">
+        <h2>Phase 2</h2>
+        <div class="section-note">MVP後にあると強い拡張画面</div>
+      </div>
+      <div class="phase-list">
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">11</span><h3>気になる / 保存済み案件</h3></div><span class="badge buyer">Buyer</span></div>
+          <img class="shot" src="images/11_buyer_favorites.png" alt="気になる保存済み案件">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">12</span><h3>保存した検索条件</h3></div><span class="badge buyer">Buyer</span></div>
+          <img class="shot" src="images/12_saved_searches.png" alt="保存した検索条件">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">13</span><h3>通知</h3></div><span class="badge buyer">Buyer</span></div>
+          <img class="shot" src="images/13_notifications.png" alt="通知">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">14</span><h3>売り手の買い手反応ダッシュボード</h3></div><span class="badge seller">Seller</span></div>
+          <img class="shot" src="images/14_seller_buyer_reactions.png" alt="売り手の買い手反応ダッシュボード">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">15</span><h3>マッチングリスト</h3></div><span class="badge seller">Seller</span></div>
+          <img class="shot" src="images/15_matching_list.png" alt="マッチングリスト">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">16</span><h3>CXMA相談 / メッセージ</h3></div><span class="badge">Message</span></div>
+          <img class="shot" src="images/16_consultation_messages.png" alt="CXMA相談 メッセージ">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">17</span><h3>資料室</h3></div><span class="badge">Data Room</span></div>
+          <img class="shot" src="images/17_data_room.png" alt="資料室">
+        </article>
+        <article class="wide-card">
+          <div class="wide-head"><div class="wide-title"><span class="number">18</span><h3>監査ログ</h3></div><span class="badge admin">Admin</span></div>
+          <img class="shot" src="images/18_audit_logs.png" alt="監査ログ">
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    CXBASE UI Design Delivery / Generated for CommerceX M&amp;A
+  </footer>
+</body>
+</html>
