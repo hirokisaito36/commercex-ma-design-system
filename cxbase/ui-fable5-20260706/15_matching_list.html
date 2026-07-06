@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE マッチングリスト（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --gold:#D9A441;
+    --gold-dark:#8A6414; --gold-ink:#2E2308;
+    --gold-soft:rgba(217,164,65,.14); --gold-line:#E4CE9F;
+    --bg:#FBFAF6; --line:#E8E2D4; --card:#FAF8F2; --muted:#6F6A60;
+    --green:#1f7a4d; --green-soft:rgba(31,122,77,.08);
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--gold); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85); white-space:nowrap;}
+  nav .active{color:#fff; position:relative;}
+  nav .active::after{content:""; position:absolute; left:0; right:0; bottom:-26px; height:3px; background:var(--gold);}
+  .head-actions{margin-left:auto; display:flex; gap:14px; align-items:center;}
+  .help{width:32px; height:32px; border:1px solid rgba(255,255,255,.4); border-radius:50%;
+    display:grid; place-items:center; font-size:14px; font-weight:700; color:rgba(255,255,255,.85);}
+  .acct{display:flex; align-items:center; gap:8px; border:1px solid rgba(255,255,255,.4);
+    border-radius:999px; padding:7px 16px 7px 10px; font-size:12.5px; font-weight:600; white-space:nowrap;}
+  .acct .dot{width:18px; height:18px; border-radius:50%; background:var(--gold);}
+
+  /* ===== page ===== */
+  main{max-width:1280px; margin:0 auto; padding:40px 32px 56px;}
+  .page-head{display:flex; align-items:baseline; gap:16px; margin-bottom:26px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em; white-space:nowrap;}
+  .page-sub{color:var(--muted); font-size:13px; font-weight:600; white-space:nowrap;}
+
+  .layout{display:grid; grid-template-columns:240px minmax(0,1fr) 300px; gap:28px; align-items:start;}
+
+  /* ===== left rail : my listing ===== */
+  .rail-label{font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.06em; margin-bottom:12px;}
+  .deal-card{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:20px 18px;}
+  .deal-top{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px;}
+  .status-chip{display:inline-flex; align-items:center; gap:6px; background:var(--gold-soft);
+    color:var(--gold-dark); border-radius:999px; padding:4px 11px; font-size:11px; font-weight:700; white-space:nowrap;}
+  .status-chip .sdot{width:6px; height:6px; border-radius:50%; background:var(--gold);}
+  .deal-id{font-size:11px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  .deal-hero{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
+  .mini-thumb{flex:0 0 64px; width:64px; height:64px; border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; display:grid; place-items:center;
+    background:radial-gradient(circle at 52% 58%, rgba(244,180,0,.11), rgba(244,180,0,0) 55%),
+    linear-gradient(135deg,#FFF9E3,#FAFAF7);}
+  .mini-thumb svg{width:40px; height:40px;}
+  .deal-cat{display:inline-flex; align-items:center; gap:7px; background:var(--black); color:var(--white);
+    border-radius:6px; padding:4px 10px; font-size:10.5px; font-weight:700; letter-spacing:.04em; white-space:nowrap;}
+  .deal-cat svg{width:12px; height:12px; flex:0 0 auto;}
+  .deal-title{font-size:15px; font-weight:800; letter-spacing:.01em; padding-bottom:8px;
+    position:relative; white-space:nowrap;}
+  .deal-title::after{content:""; position:absolute; left:0; bottom:0; width:36px; height:3px; background:var(--gold);}
+  .deal-metrics{margin-top:16px; padding-top:16px; border-top:1px solid var(--line);}
+  .dm{margin-bottom:10px;}
+  .dm:last-child{margin-bottom:0;}
+  .dm .k{font-size:10.5px; color:var(--muted); font-weight:600; margin-bottom:1px; white-space:nowrap;}
+  .dm .v{font-size:13px; font-weight:700; white-space:nowrap;}
+  .dm .v.up{color:var(--green);}
+  .deal-tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:16px;}
+  .tag{background:var(--card); border:1px solid var(--line); border-radius:999px;
+    padding:4px 10px; font-size:11px; font-weight:600; color:#3d3a33; white-space:nowrap;}
+  .deal-foot{margin-top:16px; padding-top:16px; border-top:1px solid var(--line);
+    font-size:11px; color:var(--muted); font-weight:500; line-height:1.7;}
+  .deal-foot b{font-weight:600;}
+
+  /* ===== center : candidate panel ===== */
+  .panel{background:var(--white); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:24px;}
+  .tabs{display:flex; gap:26px; border-bottom:1px solid var(--line);}
+  .tab{padding:2px 2px 16px; font-size:13px; font-weight:700; color:var(--muted);
+    position:relative; white-space:nowrap;}
+  .tab.on{color:var(--black);}
+  .tab.on::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px; background:var(--gold);}
+  .tab .n{display:inline-block; background:#F0EEE9; color:var(--muted); border-radius:999px;
+    padding:1px 8px; font-size:11px; font-weight:800; margin-left:6px;}
+  .tab.on .n{background:var(--gold); color:var(--gold-ink);}
+
+  .row{display:grid; grid-template-columns:minmax(0,1fr) 232px; gap:16px;
+    padding:18px 0; border-bottom:1px solid var(--line); align-items:center;}
+  .row:last-of-type{border-bottom:none;}
+  .b-line1{display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+  .b-name{font-size:15px; font-weight:800; white-space:nowrap;}
+  .st{display:inline-flex; align-items:center; gap:5px; border-radius:999px;
+    padding:3px 10px; font-size:11px; font-weight:700; white-space:nowrap;}
+  .st .dot{width:6px; height:6px; border-radius:50%;}
+  .st-new{background:var(--gold-soft); border:1px solid var(--gold-line); color:var(--gold-dark);}
+  .st-new .dot{background:var(--gold);}
+  .st-hold{background:var(--card); border:1px solid #D8D2C2; color:#5a564c;}
+  .st-hold .dot{background:#B7B2A6;}
+  .st-ok{background:var(--green-soft); border:1px solid #CDE4D6; color:var(--green);}
+  .st-ok .dot{background:var(--green);}
+  .st-pass{background:#F0EEE9; border:1px solid var(--line); color:var(--muted);}
+  .st-pass .dot{background:#B7B2A6;}
+  .b-type{font-size:12px; color:var(--muted); font-weight:600; white-space:nowrap; margin-bottom:2px;}
+  .b-attrs{font-size:12px; color:#3d3a33; font-weight:600; white-space:nowrap;}
+  .b-attrs span{color:var(--muted); font-weight:500;}
+  .b-attrs .sep{margin:0 6px; color:#D8D2C2;}
+
+  .acts{display:flex; gap:8px; justify-content:flex-end; align-items:center;}
+  .btn-approve{background:var(--gold); color:var(--gold-ink); border-radius:8px;
+    padding:9px 12px; font-size:12.5px; font-weight:800; white-space:nowrap;}
+  .btn-sub{background:var(--white); border:1px solid #D8D2C2; color:#3d3a33; border-radius:8px;
+    padding:8px 11px; font-size:12px; font-weight:700; white-space:nowrap;}
+  .btn-done{background:#F0EEE9; color:#B7B2A6; border-radius:8px;
+    padding:9px 12px; font-size:12.5px; font-weight:800; white-space:nowrap; cursor:default;}
+  .kebab{width:34px; height:34px; border:1px solid #D8D2C2; border-radius:8px;
+    display:grid; place-items:center; color:var(--muted); font-size:15px; font-weight:800; line-height:1;}
+  .no-act{font-size:13px; color:#B7B2A6; font-weight:600; padding-right:14px;}
+
+  .panel-foot{padding-top:16px; border-top:1px solid var(--line);
+    font-size:11.5px; color:var(--muted); font-weight:500;}
+
+  /* ===== right rail ===== */
+  .rail-card{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    padding:24px; margin-bottom:18px;}
+  .rail-card h3{font-size:14.5px; font-weight:800; margin-bottom:14px;}
+  .rail-note{font-size:12px; color:#3d3a33; line-height:1.9;}
+  .flow{margin-top:16px; padding-top:16px; border-top:1px solid var(--line);}
+  .step{display:flex; gap:12px; margin-bottom:14px;}
+  .step:last-child{margin-bottom:0;}
+  .step-n{flex:0 0 26px; width:26px; height:26px; border-radius:7px; background:var(--gold);
+    color:var(--gold-ink); font-size:12.5px; font-weight:800; display:grid; place-items:center;}
+  .step-t{font-size:12.5px; font-weight:700; line-height:1.5; white-space:nowrap;}
+  .step-s{font-size:11px; color:var(--muted); font-weight:500;}
+  .adv{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .adv-avatar{width:44px; height:44px; border-radius:50%; background:var(--gold-soft);
+    border:1.5px solid var(--gold-line); color:var(--gold-dark);
+    display:grid; place-items:center; font-size:13px; font-weight:800; flex:0 0 44px;}
+  .adv-name{font-size:13.5px; font-weight:800; white-space:nowrap;}
+  .adv-sub{font-size:11px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  .btn-outline{display:block; text-align:center; background:var(--white); color:var(--gold-dark);
+    border:1.5px solid var(--gold); border-radius:8px; padding:10px 12px; font-size:12.5px;
+    font-weight:800; white-space:nowrap;}
+
+  /* ===== footer ===== */
+  footer{border-top:1px solid var(--line); background:var(--white); margin-top:8px;}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+
+  @media (max-width:1080px){
+    .layout{grid-template-columns:1fr;}
+    .left-rail{display:none;}
+  }
+  @media (max-width:720px){
+    nav{display:none;}
+    .topbar{padding:0 16px;}
+    main{padding:24px 16px 48px;}
+    .page-head{flex-direction:column; gap:2px; align-items:flex-start;}
+    h1{font-size:22px; white-space:normal;}
+    .page-sub{white-space:normal;}
+    .tabs{gap:16px; overflow-x:auto;}
+    .row{grid-template-columns:1fr;}
+    .acts{justify-content:flex-start;}
+    .no-act{padding-right:0;}
+    .foot{flex-wrap:wrap; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">掲載案件</a>
+      <a href="#">買い手反応</a>
+      <a class="active" href="#">開示許可</a>
+      <a href="#">CXMA相談</a>
+    </nav>
+    <div class="head-actions">
+      <span class="help">?</span>
+      <span class="acct"><span class="dot"></span>売り手アカウント</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>CXMAからの買い手候補のご提案</h1>
+    <div class="page-sub">担当アドバイザーが選定した買い手候補です。提案可否をご判断ください</div>
+  </div>
+
+  <div class="layout">
+
+    <!-- left rail : my listing -->
+    <aside class="left-rail">
+      <div class="rail-label">ご掲載中の案件</div>
+      <div class="deal-card">
+        <div class="deal-top">
+          <span class="status-chip"><span class="sdot"></span>掲載中</span>
+          <span class="deal-id">D-2026-0001</span>
+        </div>
+        <div class="deal-hero">
+          <div class="mini-thumb">
+            <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="22" y="28" width="18" height="26" rx="4"/>
+              <rect x="28.5" y="21" width="5" height="7"/>
+              <path d="M31 21v-6h-9v5"/>
+              <path d="M22 40h18"/>
+              <path d="M49 38c0 0-4.5 5.5-4.5 8.5a4.5 4.5 0 0 0 9 0C53.5 43.5 49 38 49 38z" fill="#F4B400"/>
+            </svg>
+          </div>
+          <span class="deal-cat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3c3 4 5 6.5 5 9.5a5 5 0 1 1-10 0C7 9.5 9 7 12 3z"/></svg>
+            美容・化粧品
+          </span>
+        </div>
+        <div class="deal-title">スキンケアD2Cブランド</div>
+        <div class="deal-metrics">
+          <div class="dm"><div class="k">年商レンジ</div><div class="v">3〜5億円</div></div>
+          <div class="dm"><div class="k">営業利益レンジ</div><div class="v">3〜5千万円</div></div>
+          <div class="dm"><div class="k">希望価格レンジ</div><div class="v">1.5〜2.0億円</div></div>
+          <div class="dm"><div class="k">運営体制</div><div class="v">〜5名・内製中心</div></div>
+          <div class="dm"><div class="k">売上トレンド</div><div class="v up">成長基調 ↗</div></div>
+        </div>
+        <div class="deal-tags">
+          <span class="tag">自社EC中心</span><span class="tag">定期購入</span><span class="tag">OEM保有</span>
+        </div>
+        <div class="deal-foot">
+          譲渡理由：選択と集中<br>
+          <b>掲載 2026/06/28</b>
+        </div>
+      </div>
+    </aside>
+
+    <!-- center : candidates -->
+    <section>
+      <div class="panel">
+        <div class="tabs">
+          <span class="tab on">すべて<span class="n">5</span></span>
+          <span class="tab">未確認<span class="n">2</span></span>
+          <span class="tab">保留<span class="n">1</span></span>
+          <span class="tab">許可済み<span class="n">1</span></span>
+          <span class="tab">見送り<span class="n">1</span></span>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="b-line1">
+              <span class="b-name">買い手E</span>
+              <span class="st st-new"><span class="dot"></span>未確認</span>
+            </div>
+            <div class="b-type">EC事業会社・関東</div>
+            <div class="b-attrs"><span>投資予算</span> 1〜3億円<span class="sep">｜</span><span>提示</span> 07/03</div>
+          </div>
+          <div class="acts">
+            <a class="btn-approve" href="#">提案を許可</a>
+            <a class="btn-sub" href="#">保留</a>
+            <a class="btn-sub" href="#">見送り</a>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="b-line1">
+              <span class="b-name">買い手F</span>
+              <span class="st st-new"><span class="dot"></span>未確認</span>
+            </div>
+            <div class="b-type">D2Cロールアップ企業</div>
+            <div class="b-attrs"><span>投資予算</span> 1〜3億円<span class="sep">｜</span><span>提示</span> 07/03</div>
+          </div>
+          <div class="acts">
+            <a class="btn-approve" href="#">提案を許可</a>
+            <a class="btn-sub" href="#">保留</a>
+            <a class="btn-sub" href="#">見送り</a>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="b-line1">
+              <span class="b-name">買い手G</span>
+              <span class="st st-hold"><span class="dot"></span>保留</span>
+            </div>
+            <div class="b-type">個人投資家グループ</div>
+            <div class="b-attrs"><span>投資予算</span> 〜1億円<span class="sep">｜</span><span>提示</span> 07/02</div>
+          </div>
+          <div class="acts">
+            <a class="btn-approve" href="#">提案を許可</a>
+            <a class="btn-sub" href="#">見送り</a>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="b-line1">
+              <span class="b-name">買い手I</span>
+              <span class="st st-ok"><span class="dot"></span>許可済み</span>
+            </div>
+            <div class="b-type">EC支援・SaaS企業</div>
+            <div class="b-attrs"><span>提示</span> 07/01</div>
+          </div>
+          <div class="acts">
+            <span class="btn-done">提案済み</span>
+            <span class="kebab">⋯</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="b-line1">
+              <span class="b-name">買い手H</span>
+              <span class="st st-pass"><span class="dot"></span>見送り</span>
+            </div>
+            <div class="b-type">食品メーカー</div>
+            <div class="b-attrs"><span>提示</span> 07/01</div>
+          </div>
+          <div class="acts">
+            <span class="no-act">—</span>
+          </div>
+        </div>
+
+        <div class="panel-foot">
+          見送りの事実・理由が買い手候補に伝わることはありません。
+        </div>
+      </div>
+    </section>
+
+    <!-- right rail -->
+    <aside>
+      <div class="rail-card">
+        <h3>この提案について</h3>
+        <div class="rail-note">
+          許可すると、CXMAアドバイザーがこの買い手へ匿名情報で案件をご提案します。実名や詳細の開示は、その後の開示依頼にあらためて許可いただいてからです。
+        </div>
+        <div class="flow">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div><div class="step-t">提案を許可</div><div class="step-s">この画面で候補ごとにご判断いただきます</div></div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div><div class="step-t">匿名情報でご提案</div><div class="step-s">CXMAアドバイザーが社名を伏せてご提案します</div></div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div><div class="step-t">開示依頼にあらためて許可</div><div class="step-s">実名・詳細情報の開示はその後のご判断です</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="rail-card">
+        <h3>担当アドバイザー</h3>
+        <div class="adv">
+          <div class="adv-avatar">CX</div>
+          <div>
+            <div class="adv-name">CXMAアドバイザー</div>
+            <div class="adv-sub">本案件を専任で担当しています</div>
+          </div>
+        </div>
+        <a class="btn-outline" href="#">相談を予約する</a>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE 通知（買い手）（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --yellow:#F4B400;
+    --bg:#F7F7F4; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--yellow); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85); white-space:nowrap;}
+  .head-actions{margin-left:auto; display:flex; gap:18px; align-items:center;}
+  .bell{position:relative; width:38px; height:38px; display:grid; place-items:center;
+    border:1px solid rgba(255,255,255,.35); border-radius:10px; background:rgba(244,180,0,.12);}
+  .bell-badge{position:absolute; top:-7px; right:-7px; min-width:18px; height:18px; padding:0 5px;
+    background:var(--yellow); color:var(--black); border-radius:999px;
+    font-size:11px; font-weight:800; display:grid; place-items:center; line-height:1;}
+  .acct-chip{display:flex; align-items:center; gap:8px; border:1px solid rgba(255,255,255,.35);
+    border-radius:999px; padding:7px 16px 7px 8px; font-size:12.5px; font-weight:700; white-space:nowrap;}
+  .acct-dot{width:24px; height:24px; border-radius:50%; background:var(--yellow); color:var(--black);
+    display:grid; place-items:center; font-size:11px; font-weight:800;}
+
+  /* ===== page ===== */
+  main{max-width:1280px; margin:0 auto; padding:40px 32px 56px;}
+  .page-head{display:flex; align-items:baseline; gap:16px; margin-bottom:24px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em;}
+  .count{color:var(--muted); font-size:13px; font-weight:600; white-space:nowrap;}
+
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:28px; align-items:start;}
+
+  /* ===== notice list ===== */
+  .list-card{background:var(--white); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); overflow:hidden;}
+  .list-head{display:flex; align-items:center; gap:12px; padding:22px 28px 18px;
+    border-bottom:1px solid var(--line);}
+  .list-head h2{font-size:15.5px; font-weight:800; letter-spacing:.01em; white-space:nowrap;}
+  .list-head .sub{color:var(--muted); font-size:12px; font-weight:600; white-space:nowrap;}
+
+  .notice{display:flex; align-items:center; gap:16px; padding:22px 28px;
+    border-top:1px solid var(--line);}
+  .notice:first-of-type{border-top:none;}
+  .dot{flex:0 0 8px; width:8px; height:8px; border-radius:50%; background:var(--yellow); margin-top:2px;}
+  .dot.read{background:transparent;}
+  .n-main{flex:1; min-width:0;}
+  .n-meta{display:flex; align-items:center; gap:12px; margin-bottom:6px;}
+  .n-type{border:1px solid var(--line); background:var(--card); border-radius:999px;
+    padding:4px 12px; font-size:11.5px; font-weight:700; color:#3d3a33; white-space:nowrap;}
+  .n-date{color:var(--muted); font-size:12px; font-weight:600; white-space:nowrap;}
+  .n-body{font-size:14px; font-weight:700; letter-spacing:.01em;}
+  .notice.is-read .n-body{font-weight:600; color:#3d3a33;}
+  .n-link{flex:0 0 auto; border:1px solid var(--line); background:var(--white); border-radius:9px;
+    padding:9px 16px; font-size:12.5px; font-weight:700; color:#3d3a33; white-space:nowrap;}
+
+  /* ===== right rail ===== */
+  .rail-card{background:var(--white); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:18px;}
+  .rail-card h3{font-size:14.5px; font-weight:800; margin-bottom:16px;}
+
+  .setting{display:flex; align-items:center; gap:12px; padding:13px 0;
+    border-top:1px solid var(--line);}
+  .setting:first-of-type{border-top:none; padding-top:0;}
+  .setting .s-label{flex:1; font-size:13px; font-weight:700; white-space:nowrap;}
+  .s-state{font-size:11px; font-weight:800; color:var(--muted); white-space:nowrap;}
+  .s-state.on{color:#3d3a33;}
+  .toggle{flex:0 0 42px; width:42px; height:24px; border-radius:999px; position:relative;}
+  .toggle::after{content:""; position:absolute; top:3px; width:18px; height:18px; border-radius:50%;
+    background:var(--white); box-shadow:0 1px 3px rgba(17,17,17,.25);}
+  .toggle.on{background:var(--yellow);}
+  .toggle.on::after{left:21px;}
+  .toggle.off{background:#D9D5CB;}
+  .toggle.off::after{left:3px;}
+
+  .rail-note{font-size:11.5px; color:var(--muted); line-height:1.7; margin-top:14px;
+    padding-top:14px; border-top:1px solid var(--line);}
+  .rail-note b{color:#3d3a33;}
+
+  .legend-block{margin-top:14px; padding-top:16px; border-top:1px solid var(--line);}
+  .legend-title{font-size:12px; font-weight:800; color:var(--muted); letter-spacing:.05em; margin-bottom:2px; white-space:nowrap;}
+  .legend-row{display:flex; align-items:center; gap:12px; padding:11px 0; border-top:1px solid var(--line);}
+  .legend-title + .legend-row{border-top:none; padding-top:8px;}
+  .legend-tag{flex:0 0 auto; border:1px solid var(--line); background:var(--card); border-radius:999px;
+    padding:4px 12px; font-size:11.5px; font-weight:700; color:#3d3a33; white-space:nowrap;}
+  .legend-desc{font-size:11.5px; color:var(--muted); font-weight:500; line-height:1.5;}
+
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">案件を探す</a>
+      <a href="#">気になる</a>
+      <a href="#">開示依頼</a>
+      <a href="#">買いニーズ</a>
+      <a href="#">アカウント</a>
+    </nav>
+    <div class="head-actions">
+      <span class="bell">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9z"/><path d="M10 20a2.2 2.2 0 0 0 4 0"/></svg>
+        <span class="bell-badge">2</span>
+      </span>
+      <span class="acct-chip"><span class="acct-dot">買</span>買い手アカウント</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>通知</h1>
+    <div class="count">未読 2件</div>
+  </div>
+
+  <div class="layout">
+
+    <!-- notice list -->
+    <section class="list-card">
+      <div class="list-head">
+        <h2>サイト内のお知らせ</h2>
+        <span class="sub">新しい順</span>
+      </div>
+
+      <div class="notice">
+        <span class="dot"></span>
+        <div class="n-main">
+          <div class="n-meta">
+            <span class="n-type">新着案件</span>
+            <span class="n-date">2026/07/04</span>
+          </div>
+          <div class="n-body">ご関心カテゴリに新着案件「健康茶・ハーブティーEC」が公開されました</div>
+        </div>
+        <a class="n-link" href="#">詳細を見る</a>
+      </div>
+
+      <div class="notice">
+        <span class="dot"></span>
+        <div class="n-main">
+          <div class="n-meta">
+            <span class="n-type">開示依頼の進捗</span>
+            <span class="n-date">2026/07/03</span>
+          </div>
+          <div class="n-body">D-2026-0001 への開示依頼が「売り手許可待ち」になりました</div>
+        </div>
+        <a class="n-link" href="#">詳細を見る</a>
+      </div>
+
+      <div class="notice is-read">
+        <span class="dot read"></span>
+        <div class="n-main">
+          <div class="n-meta">
+            <span class="n-type">買いニーズ</span>
+            <span class="n-date">2026/07/02</span>
+          </div>
+          <div class="n-body">買いニーズに合致する案件が1件あります</div>
+        </div>
+        <a class="n-link" href="#">詳細を見る</a>
+      </div>
+
+      <div class="notice is-read">
+        <span class="dot read"></span>
+        <div class="n-main">
+          <div class="n-meta">
+            <span class="n-type">運営から</span>
+            <span class="n-date">2026/07/01</span>
+          </div>
+          <div class="n-body">システムメンテナンスのお知らせ（7/12 2:00〜4:00）</div>
+        </div>
+        <a class="n-link" href="#">詳細を見る</a>
+      </div>
+    </section>
+
+    <!-- right rail -->
+    <aside>
+      <div class="rail-card">
+        <h3>メール通知設定</h3>
+        <div class="setting">
+          <span class="s-label">サイト内のお知らせ</span>
+          <span class="s-state on">ON</span>
+          <span class="toggle on"></span>
+        </div>
+        <div class="setting">
+          <span class="s-label">メール通知</span>
+          <span class="s-state on">ON</span>
+          <span class="toggle on"></span>
+        </div>
+        <div class="setting">
+          <span class="s-label">重要通知のみ受け取る</span>
+          <span class="s-state">OFF</span>
+          <span class="toggle off"></span>
+        </div>
+        <div class="rail-note">
+          通知は登録メールアドレス宛に送信されます。
+        </div>
+        <div class="legend-block">
+          <div class="legend-title">通知の種類</div>
+          <div class="legend-row">
+            <span class="legend-tag">新着案件</span>
+            <span class="legend-desc">ご関心カテゴリの案件が公開されたとき</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-tag">開示依頼の進捗</span>
+            <span class="legend-desc">許可待ち・開示済み等の更新があったとき</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-tag">買いニーズ関連</span>
+            <span class="legend-desc">買いニーズに合致する案件のご案内</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-tag">運営からのお知らせ</span>
+            <span class="legend-desc">メンテナンス・規約変更などのご連絡</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>

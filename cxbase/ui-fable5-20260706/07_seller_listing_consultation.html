@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE 案件掲載のご相談（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --yellow:#F4B400;
+    --bg:#F7F7F4; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--yellow); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85);}
+  nav .active{color:#fff; position:relative;}
+  nav .active::after{content:""; position:absolute; left:0; right:0; bottom:-26px; height:3px; background:var(--yellow);}
+  .head-actions{margin-left:auto; display:flex; gap:12px; align-items:center;}
+  .btn-ghost{padding:9px 18px; border:1px solid rgba(255,255,255,.4); border-radius:8px; font-weight:600; font-size:13px;}
+  .btn-yellow{padding:10px 20px; background:var(--yellow); color:var(--black); border-radius:8px; font-weight:700; font-size:13px;}
+
+  /* ===== page ===== */
+  main{max-width:1080px; margin:0 auto; padding:40px 32px 56px;}
+  .page-head{margin-bottom:24px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em; margin-bottom:6px;}
+  .lead{color:var(--muted); font-size:13.5px; font-weight:500;}
+
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:24px; align-items:start;}
+
+  /* ===== form ===== */
+  .form-card{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:28px;}
+  .frow{margin-bottom:20px;}
+  .frow.cols{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px;}
+  .flab{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; margin-bottom:8px;}
+  .req{background:var(--black); color:var(--white); font-size:10px; font-weight:700;
+    border-radius:4px; padding:2px 7px; letter-spacing:.06em; line-height:1.5;}
+  .opt{background:var(--card); border:1px solid var(--line); color:var(--muted); font-size:10px; font-weight:700;
+    border-radius:4px; padding:1px 7px; letter-spacing:.06em; line-height:1.5;}
+  .input{display:flex; align-items:center; justify-content:space-between; gap:10px;
+    border:1px solid var(--line); border-radius:10px; background:var(--white);
+    padding:12px 14px; font-size:13.5px; color:#9b968c;}
+  .input .caret{color:var(--muted); font-size:11px; flex:0 0 auto;}
+  .input.area{height:120px; align-items:flex-start;}
+  .fhint{font-size:11.5px; color:var(--muted); margin-top:6px;}
+
+  .consent{border-top:1px solid var(--line); margin-top:24px; padding-top:22px;
+    display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600;}
+  .cbx{width:18px; height:18px; flex:0 0 18px; border:2px solid #C9C4B8; border-radius:5px; background:var(--white);}
+  .consent u{text-underline-offset:3px; text-decoration-thickness:1px;}
+  .btn-submit{display:block; width:100%; text-align:center; background:var(--yellow); color:var(--black);
+    border:none; border-radius:9px; padding:14px 8px; margin-top:18px;
+    font-size:14px; font-weight:800; letter-spacing:.02em;}
+  .submit-note{font-size:11.5px; color:var(--muted); text-align:center; line-height:1.7; margin-top:12px;}
+
+  /* ===== right rail ===== */
+  .rail-card{background:var(--white); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:18px;}
+  .rail-card h3{font-size:14.5px; font-weight:800; margin-bottom:16px;}
+  .step{display:flex; gap:12px; margin-bottom:14px;}
+  .step:last-of-type{margin-bottom:0;}
+  .step-n{flex:0 0 26px; width:26px; height:26px; border-radius:7px; background:var(--yellow);
+    color:var(--black); font-size:12.5px; font-weight:800; display:grid; place-items:center;}
+  .step-t{font-size:13px; font-weight:700; line-height:1.4;}
+  .step-s{font-size:11.5px; color:var(--muted); font-weight:500;}
+
+  .faq{padding-top:18px; border-top:1px solid var(--line); margin-top:18px;}
+  .faq:first-of-type{padding-top:0; border-top:none; margin-top:0;}
+  .faq-q{display:flex; gap:10px; align-items:flex-start; margin-bottom:6px;}
+  .faq-mark{flex:0 0 22px; width:22px; height:22px; border-radius:6px; background:var(--black);
+    color:var(--white); font-size:11.5px; font-weight:800; display:grid; place-items:center;}
+  .faq-qt{font-size:13px; font-weight:700; line-height:1.5; padding-top:1px;}
+  .faq-a{font-size:12px; color:var(--muted); line-height:1.7; padding-left:32px;}
+
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+
+  @media (max-width:1080px){
+    .layout{grid-template-columns:1fr;}
+  }
+  @media (max-width:720px){
+    nav, .btn-ghost{display:none;}
+    .topbar{padding:0 16px;}
+    main{padding:24px 16px 48px;}
+    h1{font-size:22px;}
+    .form-card{padding:20px 16px;}
+    .frow.cols{grid-template-columns:1fr;}
+    .rail-card{padding:20px 16px;}
+    .foot{flex-wrap:wrap; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">案件を探す</a>
+      <a class="active" href="#">案件掲載相談</a>
+    </nav>
+    <div class="head-actions">
+      <a class="btn-ghost" href="#">ログイン</a>
+      <a class="btn-yellow" href="#">無料会員登録</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>案件掲載のご相談</h1>
+    <div class="lead">掲載のご相談は無料です。担当アドバイザーがヒアリングのうえ、ノンネームでの掲載をご案内します</div>
+  </div>
+
+  <div class="layout">
+
+    <!-- form -->
+    <section class="form-card">
+      <div class="frow">
+        <div class="flab">会社名<span class="req">必須</span></div>
+        <div class="input">例：株式会社◯◯◯◯</div>
+      </div>
+      <div class="frow cols">
+        <div>
+          <div class="flab">事業カテゴリ<span class="req">必須</span></div>
+          <div class="input">美容・化粧品<span class="caret">▾</span></div>
+        </div>
+        <div>
+          <div class="flab">年商レンジ<span class="req">必須</span></div>
+          <div class="input">1〜5億円<span class="caret">▾</span></div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="flab">ご相談内容<span class="opt">任意</span></div>
+        <div class="input area">例：譲渡を検討し始めた背景、希望時期、気になる点など</div>
+      </div>
+      <div class="frow cols">
+        <div>
+          <div class="flab">ご担当者名<span class="req">必須</span></div>
+          <div class="input">例：山田 太郎</div>
+        </div>
+        <div>
+          <div class="flab">メールアドレス<span class="req">必須</span></div>
+          <div class="input">例：taro@example.co.jp</div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="flab">電話番号<span class="opt">任意</span></div>
+        <div class="input">例：03-1234-5678</div>
+        <div class="fhint">お電話を希望される場合のみご記入ください</div>
+      </div>
+
+      <div class="consent">
+        <span class="cbx"></span>
+        <span><u>利用規約</u>・<u>プライバシーポリシー</u>に同意する</span>
+      </div>
+      <a class="btn-submit" href="#">相談内容を送信</a>
+      <div class="submit-note">担当アドバイザーよりメールでご連絡いたします<br>（お電話を希望される場合のみ番号をご記入ください）</div>
+    </section>
+
+    <!-- right rail -->
+    <aside>
+      <div class="rail-card">
+        <h3>掲載までの流れ</h3>
+        <div class="step">
+          <div class="step-n">1</div>
+          <div><div class="step-t">無料相談</div><div class="step-s">このフォームから送信。費用はかかりません</div></div>
+        </div>
+        <div class="step">
+          <div class="step-n">2</div>
+          <div><div class="step-t">ヒアリング</div><div class="step-s">担当アドバイザーが事業内容とご希望を伺います</div></div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div><div class="step-t">ノンネーム作成</div><div class="step-s">社名・特定情報は伏せます</div></div>
+        </div>
+        <div class="step">
+          <div class="step-n">4</div>
+          <div><div class="step-t">公開・買い手反応の確認</div><div class="step-s">閲覧や開示依頼の状況をご確認いただけます</div></div>
+        </div>
+      </div>
+      <div class="rail-card">
+        <h3>よくあるご質問</h3>
+        <div class="faq">
+          <div class="faq-q"><span class="faq-mark">Q</span><span class="faq-qt">掲載に費用はかかりますか</span></div>
+          <div class="faq-a">掲載・相談は無料です。費用は成約時の成功報酬のみです。</div>
+        </div>
+        <div class="faq">
+          <div class="faq-q"><span class="faq-mark">Q</span><span class="faq-qt">社名が特定されませんか</span></div>
+          <div class="faq-a">社名・ブランド名・特定につながる情報は伏せて掲載します。</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>

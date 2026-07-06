@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE 会員登録（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --yellow:#F4B400;
+    --bg:#F7F7F4; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--yellow); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85);}
+  .head-actions{margin-left:auto; display:flex; gap:12px; align-items:center;}
+  .btn-ghost{padding:9px 18px; border:1px solid rgba(255,255,255,.4); border-radius:8px; font-weight:600; font-size:13px;}
+  .btn-yellow{padding:10px 20px; background:var(--yellow); color:var(--black); border-radius:8px; font-weight:700; font-size:13px;}
+
+  /* ===== page ===== */
+  main{max-width:1280px; margin:0 auto; padding:48px 32px 56px;}
+  .auth{max-width:1000px; margin:0 auto; display:grid;
+    grid-template-columns:430px minmax(0,1fr); gap:28px; align-items:stretch;}
+
+  /* ===== left black panel ===== */
+  .pitch{background:var(--black); color:var(--white); border-radius:16px;
+    padding:44px 40px; display:flex; flex-direction:column; box-shadow:var(--shadow);}
+  .pitch .brand-lg{display:flex; align-items:center; gap:14px; font-weight:800;
+    font-size:30px; letter-spacing:.05em; margin-bottom:30px; white-space:nowrap;}
+  .mark-lg{width:20px; height:20px; border:5px solid var(--yellow); transform:rotate(45deg); flex:0 0 auto;}
+  .pitch h2{font-size:22px; font-weight:800; line-height:1.7; letter-spacing:.02em;}
+  .pitch h2 em{font-style:normal; color:var(--yellow);}
+  .points{margin-top:42px; display:flex; flex-direction:column; gap:26px;}
+  .point{display:flex; gap:14px; align-items:flex-start;}
+  .deco{flex:1; display:grid; place-items:center; padding:24px 0;}
+  .deco svg{display:block;}
+  .point-n{flex:0 0 24px; width:24px; height:24px; border-radius:7px; background:var(--yellow); margin-top:2px;
+    display:grid; place-items:center;}
+  .point-n svg{width:13px; height:13px;}
+  .point-t{font-size:14.5px; font-weight:700; line-height:1.5; white-space:nowrap;}
+  .pitch-note{padding-top:30px; border-top:1px solid rgba(255,255,255,.14);
+    font-size:11.5px; color:rgba(255,255,255,.6); line-height:1.8;}
+
+  /* ===== right form card ===== */
+  .form-card{background:var(--white); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:30px 36px 32px;}
+  .tabs{display:flex; gap:28px; border-bottom:1px solid var(--line); margin-bottom:26px;}
+  .tab{padding:6px 2px 14px; font-size:15px; font-weight:800; position:relative; white-space:nowrap;}
+  .tab.on::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px; background:var(--yellow);}
+  .tab.off{color:var(--muted); font-weight:600; font-size:13.5px; align-self:flex-end;}
+
+  .field{margin-bottom:16px;}
+  .flabel{font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px; white-space:nowrap;}
+  .input{height:42px; border:1px solid var(--line); border-radius:9px; background:var(--white);}
+
+  .agree{display:flex; align-items:flex-start; gap:10px; margin:20px 0 16px;}
+  .cbox{flex:0 0 16px; width:16px; height:16px; margin-top:3px; border:1.5px solid #c9c4b8;
+    border-radius:4px; background:var(--white);}
+  .agree-t{font-size:12.5px; color:#3d3a33;}
+  .agree-t b{font-weight:700; border-bottom:1px solid #c9c4b8; padding-bottom:1px;}
+
+  .cta{display:block; text-align:center; background:var(--yellow); color:var(--black);
+    border-radius:9px; padding:13px 10px; font-size:14px; font-weight:800;}
+
+  .or{display:flex; align-items:center; gap:14px; margin:20px 0;
+    color:var(--muted); font-size:11.5px; font-weight:600;}
+  .or::before,.or::after{content:""; flex:1; height:1px; background:var(--line);}
+
+  .btn-google{display:flex; align-items:center; justify-content:center; gap:10px;
+    border:1px solid var(--line); border-radius:9px; padding:11px 10px;
+    font-size:13.5px; font-weight:700; background:var(--white);}
+  .btn-google svg{flex:0 0 auto;}
+
+  .invite{margin-top:16px; border:1px dashed #c9c4b8; border-radius:9px; background:var(--card);
+    padding:12px 10px; text-align:center; font-size:12.5px; font-weight:700; color:#3d3a33; white-space:nowrap;}
+  .invite span{color:var(--muted); font-weight:600;}
+
+  .login-link{margin-top:18px; text-align:center; font-size:12.5px; color:var(--muted);}
+  .login-link b{color:var(--black); font-weight:700; border-bottom:1.5px solid var(--yellow); padding-bottom:1px;}
+
+  /* ===== seller card under form ===== */
+  .seller-card{margin-top:20px; background:var(--white); border:1px solid var(--line);
+    border-radius:14px; padding:18px 24px; display:flex; gap:14px; align-items:flex-start;}
+  .seller-ic{flex:0 0 30px; width:30px; height:30px; border-radius:8px; background:var(--card);
+    border:1px solid var(--line); display:grid; place-items:center; margin-top:2px;}
+  .seller-t{font-size:12.5px; color:var(--muted); line-height:1.7;}
+  .seller-t b{color:var(--black); font-weight:700;}
+  .seller-t a{font-weight:700; color:var(--black); white-space:nowrap; border-bottom:1.5px solid var(--yellow); padding-bottom:1px;}
+
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">案件を探す</a>
+      <a href="#">案件掲載相談</a>
+    </nav>
+    <div class="head-actions">
+      <a class="btn-ghost" href="#">ログイン</a>
+      <a class="btn-yellow" href="#">無料会員登録</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="auth">
+
+    <!-- left : black pitch panel -->
+    <aside class="pitch">
+      <div class="brand-lg"><span class="mark-lg"></span>CXBASE</div>
+      <h2>コマース・EC・D2C領域の<br>譲渡案件に、<br><em>レンジ情報</em>から出会える</h2>
+      <div class="points">
+        <div class="point">
+          <div class="point-n"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg></div>
+          <div class="point-t">無料で案件を閲覧</div>
+        </div>
+        <div class="point">
+          <div class="point-n"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg></div>
+          <div class="point-t">買いニーズ登録で開示依頼</div>
+        </div>
+        <div class="point">
+          <div class="point-n"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg></div>
+          <div class="point-t">売り手許可後に実名開示</div>
+        </div>
+      </div>
+      <div class="deco">
+        <svg width="240" height="240" viewBox="0 0 240 240" fill="none">
+          <rect x="45" y="45" width="150" height="150" rx="10" transform="rotate(45 120 120)" stroke="#F4B400" stroke-opacity=".22" stroke-width="2.5"/>
+          <rect x="72" y="72" width="96" height="96" rx="8" transform="rotate(45 120 120)" stroke="#F4B400" stroke-opacity=".38" stroke-width="3"/>
+          <rect x="99" y="99" width="42" height="42" rx="6" transform="rotate(45 120 120)" fill="#F4B400" fill-opacity=".85"/>
+        </svg>
+      </div>
+      <div class="pitch-note">
+        案件は企業名・ブランド名を伏せ、特定につながらない範囲の情報のみ掲載しています。詳細情報は売り手の許可後に開示されます。
+      </div>
+    </aside>
+
+    <!-- right : signup form -->
+    <section>
+      <div class="form-card">
+        <div class="tabs">
+          <span class="tab on">買い手として登録</span>
+          <a class="tab off" href="#">売り手の方は掲載相談へ</a>
+        </div>
+
+        <div class="field">
+          <div class="flabel">メールアドレス</div>
+          <div class="input"></div>
+        </div>
+        <div class="field">
+          <div class="flabel">氏名</div>
+          <div class="input"></div>
+        </div>
+        <div class="field">
+          <div class="flabel">会社名</div>
+          <div class="input"></div>
+        </div>
+        <div class="field">
+          <div class="flabel">役職</div>
+          <div class="input"></div>
+        </div>
+        <div class="field">
+          <div class="flabel">パスワード</div>
+          <div class="input"></div>
+        </div>
+
+        <div class="agree">
+          <span class="cbox"></span>
+          <span class="agree-t"><b>利用規約</b> と <b>プライバシーポリシー</b> に同意する</span>
+        </div>
+
+        <a class="cta" href="#">無料で登録する</a>
+
+        <div class="or">または</div>
+
+        <a class="btn-google" href="#">
+          <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Googleで登録
+        </a>
+
+        <div class="invite">招待コードをお持ちの方はこちら <span>→</span></div>
+
+        <div class="login-link">アカウントをお持ちの方は <b>ログイン</b></div>
+      </div>
+
+      <div class="seller-card">
+        <div class="seller-ic">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6F6A60" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.5"/></svg>
+        </div>
+        <div class="seller-t">
+          <b>売り手の方へ：</b>掲載はまず無料相談から。担当アドバイザーがヒアリングのうえご案内します。
+          <a href="#">→ 案件掲載相談</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>

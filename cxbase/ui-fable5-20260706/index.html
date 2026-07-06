@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CXBASE UI Fable5版モックアップ 2026-07-05</title>
+<style>
+  :root{--black:#111;--yellow:#F4B400;--bg:#F7F7F4;--line:#E6E2D8;--muted:#6F6A60;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--black);font-family:"Hiragino Sans","Noto Sans JP",sans-serif;line-height:1.6;}
+  header{background:var(--black);color:#fff;border-bottom:4px solid var(--yellow);}
+  .top{max-width:1280px;margin:0 auto;padding:22px 28px;display:flex;justify-content:space-between;align-items:center;}
+  .brand{display:flex;gap:10px;align-items:center;font-weight:800;font-size:20px;}
+  .mark{width:13px;height:13px;border:3.5px solid var(--yellow);transform:rotate(45deg);}
+  .meta{color:rgba(255,255,255,.7);font-size:12px;text-align:right;}
+  main{max-width:1280px;margin:0 auto;padding:36px 28px 64px;}
+  .lead{color:var(--muted);font-size:13.5px;max-width:900px;margin-bottom:8px;}
+  h2{font-size:20px;margin:40px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(17,17,17,.05);}
+  .head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);gap:10px;}
+  .head b{font-size:14px;}
+  .badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--black);color:var(--yellow);white-space:nowrap;}
+  .badge.pub{color:#fff;}
+  .badge.sel{background:#fbf4df;color:#7a5b0c;border:1px solid #ead49c;}
+  .badge.adm{background:#061426;color:#4CC9F0;}
+  a.shotlink{display:block;}
+  img{display:block;width:100%;height:auto;background:#eee;}
+  .foot{padding:10px 16px;font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;}
+  .foot a{color:var(--muted);}
+  footer{border-top:1px solid var(--line);padding:22px;text-align:center;color:var(--muted);font-size:12px;}
+  @media (max-width:760px){.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header><div class="top">
+  <div class="brand"><span class="mark"></span>CXBASE UI モックアップ（Fable5版）</div>
+  <div class="meta">全19画面＋カテゴリビジュアル／HTML→PNG方式<br>2026-07-05</div>
+</div></header>
+<main>
+  <p class="lead">確定デザイン言語：レンジ表記のみ（千万円形式）・倍率なし・面一サムネ＋カテゴリチップ・視線順序（事業内容→カテゴリ→売上利益→価格→強み）・バトンズ式同意＆アピールポイント・売り手1案件・Phase 3要素なし・Admin濃紺×シアン・レスポンシブCSS込み。画像クリックで原寸。同名.htmlが原稿。</p>
+
+  <h2>カテゴリビジュアル</h2>
+  <div class="grid">
+    <div class="card"><div class="head"><b>カテゴリビジュアル v2（9標準セット）</b><span class="badge pub">Visual</span></div><a class="shotlink" href="category_visuals_v2.png"><img src="category_visuals_v2.png" alt=""></a><div class="foot"><span>正方形1:1・黒プレート＋黄下線・黄1点ルール</span><a href="category_visuals_v2.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>カテゴリビジュアル 全58種（Codex語彙をv2トーンで再作画）</b><span class="badge pub">Visual</span></div><a class="shotlink" href="category_visuals_v2_full.png"><img src="category_visuals_v2_full.png" alt=""></a><div class="foot"><span>二層運用：業種マスタ9分類／サムネ用58ビジュアル</span><a href="category_visuals_v2_full.html">HTML</a></div></div>
+  </div>
+
+  <h2>公開</h2>
+  <div class="grid">
+    <div class="card"><div class="head"><b>01 公開案件一覧</b><span class="badge pub">Public</span></div><a class="shotlink" href="01_public_deal_list.png"><img src="01_public_deal_list.png" alt=""></a><div class="foot"><span>面一サムネ・チップ・視線順序・チップフィルター</span><a href="01_public_deal_list.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>01 公開案件一覧（モバイル 390px）</b><span class="badge pub">Public</span></div><a class="shotlink" href="01_public_deal_list_mobile.png"><img src="01_public_deal_list_mobile.png" alt=""></a><div class="foot"><span>レスポンシブ実装済み・視線順序1〜4の圧縮表示</span><a href="01_public_deal_list.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>02 案件詳細プレビュー</b><span class="badge pub">Public</span></div><a class="shotlink" href="02_public_deal_preview.png"><img src="02_public_deal_preview.png" alt=""></a><div class="foot"><span>ビジュアル付きサマリー・トレンド帯・開示フロー</span><a href="02_public_deal_preview.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>03 会員登録</b><span class="badge pub">Public</span></div><a class="shotlink" href="03_signup_login.png"><img src="03_signup_login.png" alt=""></a><div class="foot"><span>買い手専用・売り手は掲載相談へ誘導</span><a href="03_signup_login.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>07 案件掲載相談</b><span class="badge pub">Public</span></div><a class="shotlink" href="07_seller_listing_consultation.png"><img src="07_seller_listing_consultation.png" alt=""></a><div class="foot"><span>電話任意・掲載までの流れ・費用FAQ</span><a href="07_seller_listing_consultation.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>10 運営会社 / 法務情報</b><span class="badge pub">Public</span></div><a class="shotlink" href="10_legal_company_info.png"><img src="10_legal_company_info.png" alt=""></a><div class="foot"><span>会社概要・運営方針3カード</span><a href="10_legal_company_info.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>16 CXMA相談</b><span class="badge pub">Public</span></div><a class="shotlink" href="16_consultation_booking.png"><img src="16_consultation_booking.png" alt=""></a><div class="foot"><span>フォーム＋面談予約＋メールフォロー（チャットなし）</span><a href="16_consultation_booking.html">HTML</a></div></div>
+  </div>
+
+  <h2>買い手</h2>
+  <div class="grid">
+    <div class="card"><div class="head"><b>買い手ホーム</b><span class="badge">Buyer</span></div><a class="shotlink" href="01_buyer_black_dashboard.png"><img src="01_buyer_black_dashboard.png" alt=""></a><div class="foot"><span>KPI・開示依頼の進捗・おすすめ案件・買いニーズ1箇所</span><a href="01_buyer_black_dashboard.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>04 買いニーズ登録（3ステップ）</b><span class="badge">Buyer</span></div><a class="shotlink" href="04_buyer_needs_wizard.png"><img src="04_buyer_needs_wizard.png" alt=""></a><div class="foot"><span>業種マスタ統一・ヘッダー縮退・約1分</span><a href="04_buyer_needs_wizard.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>05 開示依頼</b><span class="badge">Buyer</span></div><a class="shotlink" href="05_disclosure_request.png"><img src="05_disclosure_request.png" alt=""></a><div class="foot"><span>誓約3チェック・開示される情報・アピールポイント必須</span><a href="05_disclosure_request.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>11 気になる案件</b><span class="badge">Buyer</span></div><a class="shotlink" href="11_buyer_favorites.png"><img src="11_buyer_favorites.png" alt=""></a><div class="foot"><span>塗りつぶしハート・依頼中は進捗表示に分岐</span><a href="11_buyer_favorites.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>12 保存した検索条件</b><span class="badge">Buyer</span></div><a class="shotlink" href="12_saved_searches.png"><img src="12_saved_searches.png" alt=""></a><div class="foot"><span>現実的な件数・通知先は登録アドレス固定</span><a href="12_saved_searches.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>13 通知</b><span class="badge">Buyer</span></div><a class="shotlink" href="13_notifications.png"><img src="13_notifications.png" alt=""></a><div class="foot"><span>サイト内お知らせ＋メール通知設定のみ</span><a href="13_notifications.html">HTML</a></div></div>
+  </div>
+
+  <h2>売り手</h2>
+  <div class="grid">
+    <div class="card"><div class="head"><b>売り手ダッシュボード</b><span class="badge sel">Seller</span></div><a class="shotlink" href="02_seller_gold_dashboard.png"><img src="02_seller_gold_dashboard.png" alt=""></a><div class="foot"><span>1案件ヒーロー（サムネ付き）・この案件への反応</span><a href="02_seller_gold_dashboard.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>06 開示許可</b><span class="badge sel">Seller</span></div><a class="shotlink" href="06_seller_disclosure_permission.png"><img src="06_seller_disclosure_permission.png" alt=""></a><div class="foot"><span>実名＋概要書明記・誓約同意済みバッジ・保留あり</span><a href="06_seller_disclosure_permission.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>14 買い手反応</b><span class="badge sel">Seller</span></div><a class="shotlink" href="14_seller_buyer_reactions.png"><img src="14_seller_buyer_reactions.png" alt=""></a><div class="foot"><span>開示を許可／要対応強調／数字整合済み</span><a href="14_seller_buyer_reactions.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>15 マッチングリスト</b><span class="badge sel">Seller</span></div><a class="shotlink" href="15_matching_list.png"><img src="15_matching_list.png" alt=""></a><div class="foot"><span>提案を許可（二段ゲートの説明付き）</span><a href="15_matching_list.html">HTML</a></div></div>
+  </div>
+
+  <h2>Admin</h2>
+  <div class="grid">
+    <div class="card"><div class="head"><b>Adminダッシュボード</b><span class="badge adm">Admin</span></div><a class="shotlink" href="03_admin_deep_navy_dashboard.png"><img src="03_admin_deep_navy_dashboard.png" alt=""></a><div class="foot"><span>濃紺×シアン・累計ファネル・Phase 3要素なし</span><a href="03_admin_deep_navy_dashboard.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>08 案件管理</b><span class="badge adm">Admin</span></div><a class="shotlink" href="08_admin_deal_management.png"><img src="08_admin_deal_management.png" alt=""></a><div class="foot"><span>公開状態チップ・次アクション期限</span><a href="08_admin_deal_management.html">HTML</a></div></div>
+    <div class="card"><div class="head"><b>09 開示依頼管理</b><span class="badge adm">Admin</span></div><a class="shotlink" href="09_admin_disclosure_requests.png"><img src="09_admin_disclosure_requests.png" alt=""></a><div class="foot"><span>4段ステータス・NDA工程なし・超過のみ赤</span><a href="09_admin_disclosure_requests.html">HTML</a></div></div>
+  </div>
+</main>
+<footer>CXBASE UI Mockups（Fable5版）／ Generated for CommerceX M&amp;A ／ 2026-07-05</footer>
+</body>
+</html>

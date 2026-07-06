@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE 売り手アプリ 買い手反応（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff;
+    --gold:#D9A441; --gold-dark:#8a6414; --gold-soft:#FBF3E1; --gold-line:#EBD9B4;
+    --bg:#FAF9F5; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --green:#1f7a4d; --green-soft:#E7F2EB;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--gold); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85);}
+  nav a{white-space:nowrap;}
+  nav .active{color:#fff; position:relative;}
+  nav .active::after{content:""; position:absolute; left:0; right:0; bottom:-26px; height:3px; background:var(--gold);}
+  .head-actions{margin-left:auto; display:flex; gap:14px; align-items:center;}
+  .help{width:32px; height:32px; border:1px solid rgba(255,255,255,.4); border-radius:50%;
+    display:grid; place-items:center; font-size:14px; font-weight:700; color:rgba(255,255,255,.85);}
+  .acct{display:flex; align-items:center; gap:8px; border:1px solid rgba(255,255,255,.3);
+    border-radius:999px; padding:6px 14px 6px 7px; font-size:12.5px; font-weight:700; white-space:nowrap;}
+  .acct .avatar{width:22px; height:22px; border-radius:50%; background:var(--gold);
+    color:var(--black); display:grid; place-items:center; font-size:10.5px; font-weight:800;}
+
+  /* ===== page ===== */
+  main{max-width:1280px; margin:0 auto; padding:40px 32px 56px;}
+  .page-head{display:flex; align-items:baseline; gap:16px; margin-bottom:24px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em;}
+  .page-sub{color:var(--muted); font-size:13px; font-weight:600;}
+
+  .layout{display:grid; grid-template-columns:240px minmax(0,1fr) 300px; gap:28px; align-items:start;}
+
+  /* ===== left rail : listed deal ===== */
+  .rail-label{font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.06em; margin-bottom:12px;}
+  .deal-card{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:20px 18px;}
+  .deal-top{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;}
+  .cat-plate{display:inline-flex; align-items:center; gap:6px; background:var(--black); color:var(--white);
+    border-radius:7px; padding:4px 10px; font-size:10.5px; font-weight:700; letter-spacing:.03em; white-space:nowrap;}
+  .cat-plate svg{width:12px; height:12px; flex:0 0 auto;}
+  .live-chip{display:inline-flex; align-items:center; gap:5px; background:var(--gold-soft);
+    border:1px solid var(--gold-line); color:var(--gold-dark); border-radius:999px;
+    padding:3px 9px; font-size:10.5px; font-weight:700; white-space:nowrap;}
+  .live-chip .dot{width:6px; height:6px; border-radius:50%; background:var(--gold);}
+  .deal-id{font-size:11px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  .deal-hero{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
+  .mini-thumb{flex:0 0 64px; width:64px; height:64px; border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; display:grid; place-items:center;
+    background:radial-gradient(circle at 52% 58%, rgba(244,180,0,.11), rgba(244,180,0,0) 55%),
+    linear-gradient(135deg,#FFF9E3,#FAFAF7);}
+  .mini-thumb svg{width:40px; height:40px;}
+  .deal-title{font-size:15.5px; font-weight:800; letter-spacing:.01em; margin-bottom:6px;
+    padding-bottom:8px; position:relative;}
+  .deal-title::after{content:""; position:absolute; left:0; bottom:0; width:36px; height:3px; background:var(--gold);}
+  .deal-metrics{margin:12px 0 14px; border-top:1px solid var(--line);}
+  .dm{padding:9px 0; border-bottom:1px solid var(--line);}
+  .dm .k{font-size:10.5px; color:var(--muted); font-weight:600; margin-bottom:1px;}
+  .dm .v{font-size:13px; font-weight:700; white-space:nowrap;}
+  .dm .v.up{color:var(--green);}
+  .deal-tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .tag{background:var(--card); border:1px solid var(--line); border-radius:999px;
+    padding:4px 10px; font-size:11px; font-weight:600; color:#3d3a33; white-space:nowrap;}
+  .deal-foot{font-size:11px; color:var(--muted); line-height:1.7;}
+  .deal-foot b{font-weight:600;}
+
+  /* ===== KPI ===== */
+  .kpis{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin-bottom:24px;}
+  .kpi{background:var(--white); border:1px solid var(--line); border-radius:12px; padding:14px 14px 12px;}
+  .kpi .k{font-size:11px; color:var(--muted); font-weight:700; margin-bottom:4px; white-space:nowrap;}
+  .kpi .v{font-size:22px; font-weight:800; letter-spacing:.01em; white-space:nowrap;}
+  .kpi .d{font-size:11px; font-weight:700; color:var(--green); margin-left:4px;}
+  .kpi.alert{border:1.5px solid var(--gold); background:var(--gold-soft);}
+  .kpi.alert .k{display:flex; align-items:center; gap:6px;}
+  .badge-act{background:var(--gold); color:var(--black); border-radius:5px;
+    padding:1px 6px; font-size:10px; font-weight:800; white-space:nowrap;}
+
+  /* ===== interest list ===== */
+  .panel{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:24px 26px;}
+  .panel h2{font-size:16px; font-weight:800; margin-bottom:4px;}
+  .panel-sub{font-size:12px; color:var(--muted); font-weight:500; margin-bottom:18px;}
+  .tbl-head, .tbl-row{display:grid; grid-template-columns:minmax(0,1fr) 92px 72px 176px;
+    gap:14px; align-items:center;}
+  .tbl-head{padding:0 0 10px; border-bottom:1px solid var(--line);
+    font-size:11px; color:var(--muted); font-weight:700; letter-spacing:.04em;}
+  .tbl-row{padding:16px 0; border-bottom:1px solid var(--line);}
+  .tbl-row:last-child{border-bottom:none; padding-bottom:4px;}
+  .b-name{font-size:14px; font-weight:800; white-space:nowrap;}
+  .b-type{font-size:11.5px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  .st{display:inline-flex; align-items:center; gap:5px; border-radius:999px;
+    padding:4px 10px; font-size:11px; font-weight:700; white-space:nowrap;}
+  .st .dot{width:6px; height:6px; border-radius:50%;}
+  .st-wait{background:var(--gold-soft); border:1px solid var(--gold-line); color:var(--gold-dark);}
+  .st-wait .dot{background:var(--gold);}
+  .st-open{background:var(--green-soft); border:1px solid #CDE4D6; color:var(--green);}
+  .st-open .dot{background:var(--green);}
+  .st-pass{background:#F0EEE9; border:1px solid var(--line); color:var(--muted);}
+  .st-pass .dot{background:#B7B2A6;}
+  .b-date{font-size:12.5px; font-weight:600; color:#3d3a33; white-space:nowrap;}
+  .btn-gold{display:inline-block; text-align:center; background:var(--gold); color:var(--black);
+    border-radius:8px; padding:10px 12px; font-size:12.5px; font-weight:800; white-space:nowrap; width:100%;}
+  .btn-outline{display:inline-block; text-align:center; background:var(--white); color:var(--gold-dark);
+    border:1.5px solid var(--gold); border-radius:8px; padding:9px 12px; font-size:12.5px; font-weight:800;
+    white-space:nowrap; width:100%;}
+  .act-note{font-size:10px; color:var(--muted); line-height:1.5; margin-top:6px; text-align:center;}
+  .no-act{font-size:13px; color:#B7B2A6; font-weight:600; text-align:center;}
+  .panel-foot{font-size:11px; color:var(--muted); margin-top:16px;}
+
+  /* ===== right rail ===== */
+  .rail-card{background:var(--white); border:1px solid var(--line); border-radius:14px; padding:22px; margin-bottom:18px;}
+  .rail-card h3{font-size:14px; font-weight:800; margin-bottom:14px;}
+  .adv{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .adv-avatar{width:44px; height:44px; border-radius:50%; background:var(--gold-soft);
+    border:1.5px solid var(--gold-line); color:var(--gold-dark);
+    display:grid; place-items:center; font-size:13px; font-weight:800; flex:0 0 44px;}
+  .adv-name{font-size:13.5px; font-weight:800; white-space:nowrap;}
+  .adv-sub{font-size:11px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  .rail-note{font-size:12px; color:#3d3a33; line-height:1.9;}
+  .rail-note.dim{color:var(--muted); font-size:11.5px;}
+  .quote{background:var(--card); border-left:3px solid var(--gold); border-radius:0 8px 8px 0;
+    padding:12px 14px; font-size:12px; line-height:1.9; color:#3d3a33;}
+
+  /* ===== footer ===== */
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot span{white-space:nowrap;}
+  .foot .right{margin-left:auto;}
+
+  @media (max-width:1080px){
+    .layout{grid-template-columns:1fr;}
+    .deal-card{max-width:420px;}
+  }
+  @media (max-width:720px){
+    nav{display:none;}
+    .topbar{padding:0 16px;}
+    main{padding:24px 16px 48px;}
+    .page-head{flex-direction:column; gap:2px; align-items:flex-start;}
+    h1{font-size:22px;}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;}
+    .panel{padding:18px 16px;}
+    .tbl-head{display:none;}
+    .tbl-row{grid-template-columns:1fr; gap:10px; padding:16px 0;}
+    .btn-gold, .btn-outline{width:auto; padding:10px 18px;}
+    .no-act{text-align:left;}
+    .act-note{text-align:left;}
+    .foot{flex-wrap:wrap; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">掲載案件</a>
+      <a class="active" href="#">買い手反応</a>
+      <a href="#">開示許可</a>
+      <a href="#">CXMA相談</a>
+    </nav>
+    <div class="head-actions">
+      <span class="help">?</span>
+      <span class="acct"><span class="avatar">売</span>売り手アカウント</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>買い手反応</h1>
+    <div class="page-sub">ご掲載中の案件に寄せられた買い手の反応をまとめています</div>
+  </div>
+
+  <div class="layout">
+
+    <!-- left rail : listed deal -->
+    <aside>
+      <div class="rail-label">ご掲載中の案件</div>
+      <div class="deal-card">
+        <div class="deal-top">
+          <span class="live-chip"><span class="dot"></span>掲載中</span>
+          <span class="deal-id">D-2026-0001</span>
+        </div>
+        <div class="deal-hero">
+          <div class="mini-thumb">
+            <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="22" y="28" width="18" height="26" rx="4"/>
+              <rect x="28.5" y="21" width="5" height="7"/>
+              <path d="M31 21v-6h-9v5"/>
+              <path d="M22 40h18"/>
+              <path d="M49 38c0 0-4.5 5.5-4.5 8.5a4.5 4.5 0 0 0 9 0C53.5 43.5 49 38 49 38z" fill="#F4B400"/>
+            </svg>
+          </div>
+          <span class="cat-plate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3c3 4 5 6.5 5 9.5a5 5 0 1 1-10 0C7 9.5 9 7 12 3z"/></svg>
+            美容・化粧品
+          </span>
+        </div>
+        <div class="deal-title">スキンケアD2Cブランド</div>
+        <div class="deal-metrics">
+          <div class="dm"><div class="k">年商レンジ</div><div class="v">3〜5億円</div></div>
+          <div class="dm"><div class="k">営業利益レンジ</div><div class="v">3〜5千万円</div></div>
+          <div class="dm"><div class="k">希望価格レンジ</div><div class="v">1.5〜2.0億円</div></div>
+          <div class="dm"><div class="k">運営体制</div><div class="v">〜5名・内製中心</div></div>
+          <div class="dm"><div class="k">売上トレンド</div><div class="v up">成長基調 ↗</div></div>
+        </div>
+        <div class="deal-tags">
+          <span class="tag">自社EC中心</span><span class="tag">定期購入</span><span class="tag">OEM保有</span>
+        </div>
+        <div class="deal-foot">
+          譲渡理由：選択と集中<br>
+          <b>掲載 2026/06/28</b>
+        </div>
+      </div>
+    </aside>
+
+    <!-- center -->
+    <section>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="k">閲覧</div>
+          <div class="v">342<span class="d">+34</span></div>
+        </div>
+        <div class="kpi">
+          <div class="k">気になる</div>
+          <div class="v">26<span class="d">+5</span></div>
+        </div>
+        <div class="kpi">
+          <div class="k">実名開示依頼</div>
+          <div class="v">8<span class="d">+2</span></div>
+        </div>
+        <div class="kpi alert">
+          <div class="k">許可待ち<span class="badge-act">要対応</span></div>
+          <div class="v">3</div>
+        </div>
+        <div class="kpi">
+          <div class="k">面談候補</div>
+          <div class="v">2<span class="d">+1</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>買い手の関心リスト</h2>
+        <div class="panel-sub">実名開示を依頼した買い手 全8件の一覧です。まずは許可待ちの3件からご対応ください。</div>
+        <div class="tbl-head">
+          <span>買い手</span><span>状態</span><span>依頼日</span><span>アクション</span>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手A</div>
+            <div class="b-type">EC事業会社</div>
+          </div>
+          <div><span class="st st-wait"><span class="dot"></span>許可待ち</span></div>
+          <div class="b-date">07/02</div>
+          <div><a class="btn-gold" href="#">開示を許可</a></div>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手B</div>
+            <div class="b-type">個人投資家グループ</div>
+          </div>
+          <div><span class="st st-wait"><span class="dot"></span>許可待ち</span></div>
+          <div class="b-date">07/03</div>
+          <div><a class="btn-gold" href="#">開示を許可</a></div>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手E</div>
+            <div class="b-type">化粧品OEMメーカー</div>
+          </div>
+          <div><span class="st st-wait"><span class="dot"></span>許可待ち</span></div>
+          <div class="b-date">07/04</div>
+          <div><a class="btn-gold" href="#">開示を許可</a></div>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手C</div>
+            <div class="b-type">D2Cロールアップ企業</div>
+          </div>
+          <div><span class="st st-open"><span class="dot"></span>開示済み</span></div>
+          <div class="b-date">06/30</div>
+          <div><a class="btn-outline" href="#">面談日程を提案</a></div>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手F</div>
+            <div class="b-type">美容・健康商社</div>
+          </div>
+          <div><span class="st st-open"><span class="dot"></span>開示済み</span></div>
+          <div class="b-date">06/29</div>
+          <div><a class="btn-outline" href="#">面談日程を提案</a></div>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手G</div>
+            <div class="b-type">EC運営代行会社</div>
+          </div>
+          <div><span class="st st-open"><span class="dot"></span>開示済み</span></div>
+          <div class="b-date">07/01</div>
+          <div class="no-act">買い手が検討中</div>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手H</div>
+            <div class="b-type">日用品メーカー</div>
+          </div>
+          <div><span class="st st-open"><span class="dot"></span>開示済み</span></div>
+          <div class="b-date">07/01</div>
+          <div class="no-act">買い手が検討中</div>
+        </div>
+        <div class="tbl-row">
+          <div>
+            <div class="b-name">買い手D</div>
+            <div class="b-type">食品メーカー</div>
+          </div>
+          <div><span class="st st-pass"><span class="dot"></span>見送り済み</span></div>
+          <div class="b-date">06/29</div>
+          <div class="no-act">—</div>
+        </div>
+        <div class="panel-foot">※ 面談の日程調整はCXMAアドバイザーが行います</div>
+      </div>
+    </section>
+
+    <!-- right rail -->
+    <aside>
+      <div class="rail-card">
+        <h3>担当アドバイザー</h3>
+        <div class="adv">
+          <div class="adv-avatar">CX</div>
+          <div>
+            <div class="adv-name">CXMAアドバイザー</div>
+            <div class="adv-sub">本案件を専任で担当しています</div>
+          </div>
+        </div>
+        <a class="btn-outline" href="#">相談を予約する</a>
+      </div>
+      <div class="rail-card">
+        <h3>アドバイザーコメント</h3>
+        <div class="quote">
+          スキンケア領域でLTVやCRMの強みを訴求すると、買い手からの開示依頼が増えやすくなります。
+        </div>
+      </div>
+      <div class="rail-card">
+        <h3>データについて</h3>
+        <div class="rail-note dim">
+          数値は1時間ごとに更新されます（最終更新 2026/07/05 09:00）
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>
