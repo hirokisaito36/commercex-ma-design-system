@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE 運営会社・法務情報（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --yellow:#F4B400;
+    --bg:#F7F7F4; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--yellow); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85);}
+  nav .active{color:#fff; position:relative;}
+  nav .active::after{content:""; position:absolute; left:0; right:0; bottom:-26px; height:3px; background:var(--yellow);}
+  .head-actions{margin-left:auto; display:flex; gap:12px; align-items:center;}
+  .btn-ghost{padding:9px 18px; border:1px solid rgba(255,255,255,.4); border-radius:8px; font-weight:600; font-size:13px;}
+  .btn-yellow{padding:10px 20px; background:var(--yellow); color:var(--black); border-radius:8px; font-weight:700; font-size:13px;}
+
+  /* ===== page ===== */
+  main{max-width:1280px; margin:0 auto; padding:40px 32px 56px;}
+  .page-head{display:flex; align-items:baseline; gap:16px; margin-bottom:24px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em;}
+  .count{color:var(--muted); font-size:13px; font-weight:600;}
+
+  .legal-layout{display:grid; grid-template-columns:240px minmax(0,1fr); gap:24px; align-items:start;}
+
+  /* ===== side menu ===== */
+  .side-menu{background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px;}
+  .side-menu a{display:block; padding:12px 14px; border-radius:9px; font-size:13.5px; font-weight:600; color:#3d3a33;}
+  .side-menu a + a{margin-top:4px;}
+  .side-menu a.on{background:var(--black); color:var(--white); position:relative; font-weight:700;}
+  .side-menu a.on::before{content:""; position:absolute; left:0; top:10px; bottom:10px; width:3px;
+    border-radius:2px; background:var(--yellow);}
+  .side-menu a:hover{background:var(--card);}
+  .side-menu a.on:hover{background:var(--black);}
+
+  /* ===== content ===== */
+  .sec-title{font-size:18px; font-weight:800; letter-spacing:.01em; margin-bottom:18px;
+    padding-bottom:8px; position:relative; display:inline-block;}
+  .sec-title::after{content:""; position:absolute; left:0; bottom:0; width:44px; height:3px; background:var(--yellow);}
+
+  .info-card{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); overflow:hidden; margin-bottom:40px;}
+  .info-table{width:100%; border-collapse:collapse;}
+  .info-table tr + tr th, .info-table tr + tr td{border-top:1px solid var(--line);}
+  .info-table th{width:200px; text-align:left; vertical-align:top; padding:18px 20px 18px 24px;
+    font-size:13px; font-weight:700; color:#3d3a33; background:var(--card); white-space:nowrap;}
+  .info-table td{padding:18px 24px; font-size:13.5px; font-weight:500; color:var(--black);}
+  .td-note{display:block; font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .link-plain{border-bottom:1.5px solid var(--black); padding-bottom:1px; font-weight:600;}
+  .link-plain:hover{border-bottom-color:var(--yellow);}
+
+  .policy-cards{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;}
+  .policy-card{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:24px 22px;}
+  .policy-icon{width:52px; height:52px; border-radius:12px; display:grid; place-items:center; margin-bottom:16px;
+    background:radial-gradient(circle at 52% 58%, rgba(244,180,0,.11), rgba(244,180,0,0) 55%),
+    linear-gradient(135deg,#FFF9E3,#FAFAF7); border:1px solid var(--line);}
+  .policy-icon svg{width:30px; height:30px;}
+  .policy-t{font-size:14.5px; font-weight:800; margin-bottom:8px;}
+  .policy-s{font-size:12.5px; color:var(--muted); line-height:1.8;}
+
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+
+  @media (max-width:1080px){
+    .legal-layout{grid-template-columns:1fr;}
+    .side-menu{display:flex; flex-wrap:wrap; gap:6px; padding:10px;}
+    .side-menu a + a{margin-top:0;}
+    .side-menu a{padding:9px 14px; font-size:12.5px;}
+    .side-menu a.on::before{display:none;}
+    .policy-cards{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+  @media (max-width:720px){
+    nav, .btn-ghost{display:none;}
+    .topbar{padding:0 16px;}
+    main{padding:24px 16px 48px;}
+    .page-head{flex-direction:column; gap:2px; align-items:flex-start;}
+    h1{font-size:22px;}
+    .info-table th{width:112px; padding:16px 12px 16px 16px; white-space:normal;}
+    .info-table td{padding:16px 16px;}
+    .policy-cards{grid-template-columns:1fr;}
+    .foot{flex-wrap:wrap; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">案件を探す</a>
+      <a href="#">案件掲載相談</a>
+    </nav>
+    <div class="head-actions">
+      <a class="btn-ghost" href="#">ログイン</a>
+      <a class="btn-yellow" href="#">無料会員登録</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>運営会社・法務情報</h1>
+    <div class="count">最終更新 2026/07/01</div>
+  </div>
+
+  <div class="legal-layout">
+
+    <!-- side menu -->
+    <aside class="side-menu">
+      <a class="on" href="#">運営会社</a>
+      <a href="#">特定商取引法に基づく表記</a>
+      <a href="#">利用規約</a>
+      <a href="#">プライバシーポリシー</a>
+      <a href="#">お問い合わせ</a>
+    </aside>
+
+    <!-- content -->
+    <section>
+      <h2 class="sec-title">運営会社</h2>
+      <div class="info-card">
+        <table class="info-table">
+          <tr>
+            <th>社名</th>
+            <td>CommerceX M&amp;A株式会社</td>
+          </tr>
+          <tr>
+            <th>代表取締役</th>
+            <td>齋藤 浩喜</td>
+          </tr>
+          <tr>
+            <th>設立</th>
+            <td>2026年5月</td>
+          </tr>
+          <tr>
+            <th>所在地</th>
+            <td>東京都<span class="td-note">詳細はお問い合わせください</span></td>
+          </tr>
+          <tr>
+            <th>事業内容</th>
+            <td>EC・D2C領域のM&amp;A支援、CXBASEの運営</td>
+          </tr>
+          <tr>
+            <th>URL</th>
+            <td><a class="link-plain" href="#">commercex.co.jp</a></td>
+          </tr>
+        </table>
+      </div>
+
+      <h2 class="sec-title">運営方針</h2>
+      <div class="policy-cards">
+        <div class="policy-card">
+          <div class="policy-icon"><svg viewBox="0 0 48 48" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 24s6.5-9.5 17-9.5S41 24 41 24s-6.5 9.5-17 9.5S7 24 7 24z"/>
+            <circle cx="24" cy="24" r="4.5" fill="#F4B400" stroke="none"/>
+            <path d="M11 37L37 11"/>
+          </svg></div>
+          <div class="policy-t">匿名性の徹底</div>
+          <div class="policy-s">社名や特定につながる情報は<br>伏せて掲載します</div>
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon"><svg viewBox="0 0 48 48" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="24" cy="15" r="5.5"/>
+            <path d="M14 38c0-6 4.5-10 10-10s10 4 10 10"/>
+            <circle cx="9" cy="19" r="3.5"/><path d="M3 33c0-4 2.5-6.5 6-6.5"/>
+            <circle cx="39" cy="19" r="3.5"/><path d="M45 33c0-4-2.5-6.5-6-6.5"/>
+            <circle cx="31" cy="9" r="2.5" fill="#F4B400" stroke="none"/>
+          </svg></div>
+          <div class="policy-t">アドバイザー介在</div>
+          <div class="policy-s">開示や面談は<br>CXMAアドバイザーが介在します</div>
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon"><svg viewBox="0 0 48 48" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="21" width="24" height="18" rx="4"/>
+            <path d="M17 21v-5a7 7 0 0 1 14 0v5"/>
+            <circle cx="24" cy="28.5" r="2.6" fill="#F4B400" stroke="none"/>
+            <path d="M24 31.5V35"/>
+          </svg></div>
+          <div class="policy-t">情報管理</div>
+          <div class="policy-s">開示依頼時の秘密保持誓約と売り手許可制で管理します</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>

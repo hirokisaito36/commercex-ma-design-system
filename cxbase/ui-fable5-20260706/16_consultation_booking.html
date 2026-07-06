@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE CXMA相談（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --yellow:#F4B400;
+    --bg:#F7F7F4; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column; min-height:100vh;
+  }
+  main{flex:1;}
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--yellow); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85);}
+  nav .active{color:#fff; position:relative;}
+  nav .active::after{content:""; position:absolute; left:0; right:0; bottom:-26px; height:3px; background:var(--yellow);}
+  .head-actions{margin-left:auto; display:flex; gap:12px; align-items:center;}
+  .btn-ghost{padding:9px 18px; border:1px solid rgba(255,255,255,.4); border-radius:8px; font-weight:600; font-size:13px;}
+  .btn-yellow{padding:10px 20px; background:var(--yellow); color:var(--black); border-radius:8px; font-weight:700; font-size:13px;}
+
+  /* ===== page ===== */
+  main{max-width:1280px; margin:0 auto; padding:40px 32px 56px;}
+  .page-head{margin-bottom:28px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em; margin-bottom:6px;}
+  .lead{color:var(--muted); font-size:13.5px; font-weight:500;}
+
+  .layout{display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:24px; align-items:start;}
+
+  .panel{background:var(--white); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:28px;}
+  .panel h2{font-size:17px; font-weight:800; letter-spacing:.01em; padding-bottom:18px;
+    border-bottom:1px solid var(--line); margin-bottom:22px;}
+
+  .flabel{font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.06em; margin-bottom:10px;}
+  .flabel .opt{font-weight:600; color:#9b968c; letter-spacing:0; margin-left:6px;}
+  .fblock{margin-bottom:22px;}
+
+  /* 相談種別 segmented */
+  .seg{display:flex; gap:10px;}
+  .seg-item{flex:1; text-align:center; border:1px solid var(--line); background:var(--card);
+    border-radius:10px; padding:11px 8px; font-size:13px; font-weight:700; color:#3d3a33; white-space:nowrap;}
+  .seg-item.on{background:var(--black); color:var(--white); border-color:var(--black);
+    box-shadow:inset 0 -2.5px 0 var(--yellow);}
+
+  /* 対象案件 compact card */
+  .deal-mini{display:flex; align-items:center; gap:14px; border:1px solid var(--line);
+    background:var(--card); border-radius:12px; padding:12px 16px 12px 12px;}
+  .mini-thumb{flex:0 0 64px; width:64px; height:64px; border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; display:grid; place-items:center;
+    background:radial-gradient(circle at 52% 58%, rgba(244,180,0,.11), rgba(244,180,0,0) 55%),
+    linear-gradient(135deg,#FFF9E3,#FAFAF7);}
+  .mini-thumb svg{width:40px; height:40px;}
+  .mini-body{min-width:0; flex:1;}
+  .mini-top{display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+  .mini-title{font-size:14px; font-weight:800; white-space:nowrap;}
+  .mini-cat{background:var(--black); color:var(--white); font-size:10.5px; font-weight:700;
+    letter-spacing:.04em; padding:3px 8px; border-radius:5px; border-bottom:2px solid var(--yellow); white-space:nowrap;}
+  .mini-ranges{font-size:11.5px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  .mini-ranges b{color:var(--black); font-weight:800;}
+  .mini-change{flex:0 0 auto; font-size:12px; font-weight:700; color:#3d3a33;
+    border:1px solid var(--line); background:var(--white); border-radius:8px; padding:7px 14px; white-space:nowrap;}
+  .mini-id{font-size:10.5px; color:var(--muted); font-weight:600; margin-top:2px;}
+
+  /* inputs */
+  textarea, .input{width:100%; border:1px solid var(--line); background:var(--white);
+    border-radius:10px; padding:11px 14px; font-size:13.5px; color:var(--black);
+    font-family:inherit; line-height:1.6;}
+  textarea{height:132px; resize:none;}
+  ::placeholder{color:#9b968c;}
+  .input.ph{color:#9b968c;}
+  .counter{text-align:right; font-size:11.5px; color:var(--muted); font-weight:600; margin-top:6px;}
+  .frow{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+
+  .consent{display:flex; align-items:flex-start; gap:10px; margin-bottom:18px;}
+  .cbox{flex:0 0 18px; width:18px; height:18px; border:2px solid #c9c4b8; border-radius:5px;
+    background:var(--white); margin-top:2px;}
+  .consent-t{font-size:12.5px; color:#3d3a33; font-weight:500;}
+  .consent-t b{font-weight:700;}
+
+  .cta-yellow{display:block; width:100%; text-align:center; background:var(--yellow); color:var(--black);
+    border-radius:10px; padding:14px 8px; font-size:14.5px; font-weight:800;}
+  .cta-sub{font-size:11.5px; color:var(--muted); text-align:center; margin-top:12px;}
+
+  /* ===== booking panel ===== */
+  .book-note{font-size:12px; color:var(--muted); font-weight:500; margin:0 0 20px;}
+  .day-tabs{display:flex; gap:8px; margin-bottom:20px;}
+  .day{flex:1; text-align:center; border:1px solid var(--line); background:var(--card);
+    border-radius:9px; padding:9px 2px; font-size:12.5px; font-weight:700; color:#3d3a33; white-space:nowrap;}
+  .day.on{background:var(--black); color:var(--white); border-color:var(--black);
+    box-shadow:inset 0 -2.5px 0 var(--yellow);}
+  .day .dow{display:block; font-size:10.5px; font-weight:600; color:var(--muted);}
+  .day.on .dow{color:rgba(255,255,255,.75);}
+
+  .slots{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-bottom:20px;}
+  .slot{border:1px solid var(--line); background:var(--white); border-radius:10px;
+    text-align:center; padding:10px 4px 8px;}
+  .slot .t{font-size:14px; font-weight:800; letter-spacing:.02em;}
+  .slot .a{font-size:11px; font-weight:700; color:#1f7a4d;}
+  .slot.off{background:var(--card);}
+  .slot.off .t{color:#b7b2a6;}
+  .slot.off .a{color:#b7b2a6;}
+  .slot.sel{background:var(--black); border-color:var(--black);}
+  .slot.sel .t{color:var(--white);}
+  .slot.sel .a{color:var(--yellow);}
+
+  .btn-black{display:block; width:100%; text-align:center; background:var(--black); color:var(--white);
+    border-radius:10px; padding:13px 8px; font-size:13.5px; font-weight:700;}
+  .book-foot{font-size:11.5px; color:var(--muted); text-align:center; margin-top:12px;}
+
+  /* ===== bottom ===== */
+  .bottom{display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:24px; margin-top:24px; align-items:start;}
+  .flow{background:var(--white); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); padding:28px;}
+  .flow h3{font-size:15px; font-weight:800; padding-bottom:18px; border-bottom:1px solid var(--line); margin-bottom:22px;}
+  .flow-steps{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;}
+  .fstep{display:flex; gap:12px; align-items:flex-start;}
+  .fstep-n{flex:0 0 26px; width:26px; height:26px; border-radius:7px; background:var(--yellow);
+    color:var(--black); font-size:12.5px; font-weight:800; display:grid; place-items:center;}
+  .fstep-t{font-size:13px; font-weight:700; line-height:1.45;}
+  .fstep-s{font-size:11.5px; color:var(--muted); font-weight:500; margin-top:2px;}
+  .secrecy{background:var(--white); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); padding:28px;}
+  .secrecy h3{font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px; margin-bottom:12px;}
+  .secrecy p{font-size:12.5px; color:var(--muted); line-height:1.8;}
+
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+
+  @media (max-width:1080px){
+    .layout{grid-template-columns:1fr;}
+    .bottom{grid-template-columns:1fr;}
+  }
+  @media (max-width:720px){
+    nav, .btn-ghost{display:none;}
+    .topbar{padding:0 16px;}
+    main{padding:24px 16px 48px;}
+    h1{font-size:22px;}
+    .panel, .flow, .secrecy{padding:20px;}
+    .seg{flex-direction:column;}
+    .frow{grid-template-columns:1fr;}
+    .deal-mini{flex-wrap:wrap;}
+    .mini-change{margin-left:74px;}
+    .day-tabs{flex-wrap:wrap;}
+    .day{flex:1 1 30%;}
+    .slots{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .flow-steps{grid-template-columns:1fr;}
+    .foot{flex-wrap:wrap; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">案件を探す</a>
+      <a href="#">案件掲載相談</a>
+    </nav>
+    <div class="head-actions">
+      <a class="btn-ghost" href="#">ログイン</a>
+      <a class="btn-yellow" href="#">無料会員登録</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>CXMA相談</h1>
+    <div class="lead">M&amp;Aのご相談・壁打ちを無料で承ります。フォーム送信または面談予約をご利用ください</div>
+  </div>
+
+  <div class="layout">
+
+    <!-- left : form -->
+    <section class="panel">
+      <h2>相談内容の入力</h2>
+
+      <div class="fblock">
+        <div class="flabel">相談種別</div>
+        <div class="seg">
+          <span class="seg-item on">買収の相談</span>
+          <span class="seg-item">売却の相談</span>
+          <span class="seg-item">その他</span>
+        </div>
+      </div>
+
+      <div class="fblock">
+        <div class="flabel">対象案件<span class="opt">（任意）</span></div>
+        <div class="deal-mini">
+          <div class="mini-thumb"><svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="22" y="28" width="18" height="26" rx="4"/><rect x="28.5" y="21" width="5" height="7"/>
+            <path d="M31 21v-6h-9v5"/><path d="M22 40h18"/>
+            <path d="M49 38c0 0-4.5 5.5-4.5 8.5a4.5 4.5 0 0 0 9 0C53.5 43.5 49 38 49 38z" fill="#F4B400"/>
+          </svg></div>
+          <div class="mini-body">
+            <div class="mini-top">
+              <span class="mini-title">スキンケアD2Cブランド</span>
+              <span class="mini-cat">美容・化粧品</span>
+            </div>
+            <div class="mini-ranges">年商 <b>3〜5億円</b>｜営業利益 <b>3〜5千万円</b>｜希望価格 <b>1.5〜2.0億円</b></div>
+            <div class="mini-id">D-2026-0001</div>
+          </div>
+          <span class="mini-change">変更する</span>
+        </div>
+      </div>
+
+      <div class="fblock">
+        <div class="flabel">相談内容</div>
+        <textarea placeholder="例：本案件の買収を検討しています。進め方と資金計画についてご相談したいです。"></textarea>
+        <div class="counter">0 / 1,000</div>
+      </div>
+
+      <div class="fblock">
+        <div class="frow">
+          <div>
+            <div class="flabel">会社名</div>
+            <div class="input ph">株式会社〇〇</div>
+          </div>
+          <div>
+            <div class="flabel">ご担当者名</div>
+            <div class="input ph">山田 太郎</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fblock">
+        <div class="flabel">メールアドレス</div>
+        <div class="input ph">example@company.co.jp</div>
+      </div>
+
+      <div class="consent">
+        <span class="cbox"></span>
+        <span class="consent-t"><b>利用規約</b>および<b>プライバシーポリシー</b>に同意します</span>
+      </div>
+
+      <a class="cta-yellow" href="#">内容を確認する</a>
+      <div class="cta-sub">送信前に入力内容の確認画面を表示します</div>
+    </section>
+
+    <!-- right : booking -->
+    <aside class="panel">
+      <h2>面談を予約する（オンライン）</h2>
+      <div class="book-note">ご都合のよい日時を選択してください（オンライン・無料）</div>
+
+      <div class="day-tabs">
+        <span class="day on">7/8<span class="dow">水</span></span>
+        <span class="day">7/9<span class="dow">木</span></span>
+        <span class="day">7/10<span class="dow">金</span></span>
+        <span class="day">7/11<span class="dow">土</span></span>
+        <span class="day">7/12<span class="dow">日</span></span>
+      </div>
+
+      <div class="slots">
+        <div class="slot"><div class="t">10:00</div><div class="a">○</div></div>
+        <div class="slot off"><div class="t">11:00</div><div class="a">×</div></div>
+        <div class="slot sel"><div class="t">14:00</div><div class="a">選択中</div></div>
+        <div class="slot"><div class="t">15:00</div><div class="a">○</div></div>
+        <div class="slot"><div class="t">16:00</div><div class="a">○</div></div>
+        <div class="slot off"><div class="t">17:00</div><div class="a">×</div></div>
+      </div>
+
+      <a class="btn-black" href="#">この枠で予約する</a>
+      <div class="book-foot">予約確定後、メールで詳細をご案内します</div>
+    </aside>
+
+  </div>
+
+  <!-- bottom -->
+  <div class="bottom">
+    <div class="flow">
+      <h3>送信後の流れ</h3>
+      <div class="flow-steps">
+        <div class="fstep">
+          <div class="fstep-n">1</div>
+          <div><div class="fstep-t">内容を受領</div><div class="fstep-s">担当者がご相談内容を拝見します</div></div>
+        </div>
+        <div class="fstep">
+          <div class="fstep-n">2</div>
+          <div><div class="fstep-t">日程のご連絡</div><div class="fstep-s">当日〜翌営業日にメールでご連絡します</div></div>
+        </div>
+        <div class="fstep">
+          <div class="fstep-n">3</div>
+          <div><div class="fstep-t">面談・ご提案</div><div class="fstep-s">状況を伺い、進め方をご提案します</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="secrecy">
+      <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>秘密保持について</h3>
+      <p>ご入力内容は厳重に管理し、目的外に使用しません。会社名・ご相談内容が第三者に開示されることはありません。</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>

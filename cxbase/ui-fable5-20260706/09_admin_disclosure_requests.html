@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE Admin 開示依頼管理（Fable5試作）</title>
+<style>
+  :root{
+    --page:#061426; --panel:#0B2545; --panel2:#0E2C52;
+    --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.06);
+    --text:#EAF1F8; --muted:#8FA6BF; --cyan:#4CC9F0;
+    --red:#FF7B7B; --green:#4FD08C; --violet:#B9A7F5; --blue:#7FB2FF;
+    --shadow:0 10px 30px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--page); color:var(--text);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  .shell{display:flex; min-height:100vh;}
+
+  /* ===== sidebar ===== */
+  .side{flex:0 0 232px; background:var(--panel); border-right:1px solid var(--line2);
+    padding:24px 16px; display:flex; flex-direction:column;}
+  .side-brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px;
+    letter-spacing:.04em; padding:4px 10px 22px; white-space:nowrap;}
+  .mark{width:12px; height:12px; border:3px solid var(--cyan); transform:rotate(45deg); flex:0 0 auto;}
+  .side-label{font-size:10.5px; font-weight:700; color:var(--muted); letter-spacing:.12em;
+    padding:0 10px; margin-bottom:10px;}
+  .snav{display:flex; flex-direction:column; gap:4px;}
+  .snav a{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:9px;
+    font-size:13.5px; font-weight:600; color:var(--muted); white-space:nowrap;}
+  .snav a svg{flex:0 0 auto; opacity:.85;}
+  .snav a.active{background:var(--panel2); color:var(--text); position:relative;}
+  .snav a.active::before{content:""; position:absolute; left:0; top:8px; bottom:8px; width:3px;
+    border-radius:99px; background:var(--cyan);}
+  .snav .num{margin-left:auto; background:rgba(76,201,240,.14); color:var(--cyan);
+    border-radius:999px; padding:1px 8px; font-size:11px; font-weight:700;}
+  .side-foot{margin-top:auto; padding:14px 10px 2px; font-size:11px; color:var(--muted);
+    border-top:1px solid var(--line2); white-space:nowrap;}
+
+  /* ===== main column ===== */
+  .maincol{flex:1; min-width:0; display:flex; flex-direction:column;}
+  .topbar{height:60px; background:var(--panel); border-bottom:1px solid var(--line2);
+    display:flex; align-items:center; gap:16px; padding:0 28px;}
+  .topbar .app{font-size:14.5px; font-weight:800; letter-spacing:.05em; white-space:nowrap;}
+  .topbar .env{font-size:10.5px; font-weight:700; color:var(--cyan); border:1px solid rgba(76,201,240,.45);
+    border-radius:999px; padding:2px 10px; letter-spacing:.06em; white-space:nowrap;}
+  .op{margin-left:auto; display:flex; align-items:center; gap:10px;
+    background:var(--panel2); border:1px solid var(--line); border-radius:999px;
+    padding:6px 14px 6px 7px; font-size:12.5px; font-weight:700; white-space:nowrap;}
+  .op .av{width:24px; height:24px; border-radius:50%; background:rgba(76,201,240,.18);
+    color:var(--cyan); display:grid; place-items:center; font-size:11px; font-weight:800;}
+
+  main{padding:32px 32px 44px; max-width:1120px; width:100%;}
+  .page-head{display:flex; align-items:baseline; gap:16px; margin-bottom:6px;}
+  h1{font-size:23px; font-weight:800; letter-spacing:.02em; white-space:nowrap;}
+  .page-sub{color:var(--muted); font-size:12.5px; font-weight:500; white-space:nowrap;}
+
+  /* ===== tabs ===== */
+  .tabs{display:flex; gap:26px; margin:18px 0 22px; border-bottom:1px solid var(--line);}
+  .tab{padding:10px 2px 12px; font-size:13.5px; font-weight:600; color:var(--muted);
+    white-space:nowrap; position:relative;}
+  .tab b{font-weight:700; margin-left:6px; color:inherit;}
+  .tab.on{color:var(--text);}
+  .tab.on::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px; background:var(--cyan);}
+
+  /* ===== table panel ===== */
+  .panel{background:var(--panel); border:1px solid var(--line2); border-radius:14px;
+    box-shadow:var(--shadow); overflow:hidden;}
+  table{width:100%; border-collapse:collapse;}
+  thead th{text-align:left; font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.08em;
+    padding:14px 18px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.02);
+    white-space:nowrap;}
+  tbody td{padding:16px 18px; border-bottom:1px solid var(--line2); font-size:13.5px;
+    vertical-align:middle; white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.id{font-weight:700; letter-spacing:.02em;}
+  td.buyer{font-weight:600;}
+  td.deal{color:var(--muted); font-weight:600;}
+  .arrow{color:var(--muted); font-size:12px; font-weight:600; margin-left:12px;}
+
+  .chip{display:inline-flex; align-items:center; gap:7px; border-radius:999px;
+    padding:4px 12px; font-size:12px; font-weight:700; white-space:nowrap;}
+  .chip .dot{width:6px; height:6px; border-radius:50%; flex:0 0 auto;}
+  .st-new{background:rgba(76,201,240,.13); color:var(--cyan);}
+  .st-new .dot{background:var(--cyan);}
+  .st-wait{background:rgba(185,167,245,.13); color:var(--violet);}
+  .st-wait .dot{background:var(--violet);}
+  .st-open{background:rgba(79,208,140,.12); color:var(--green);}
+  .st-open .dot{background:var(--green);}
+  .st-mtg{background:rgba(127,178,255,.13); color:var(--blue);}
+  .st-mtg .dot{background:var(--blue);}
+  .st-pass{background:rgba(255,255,255,.07); color:var(--muted);}
+  .st-pass .dot{background:var(--muted);}
+
+  /* overdue row */
+  tr.overdue td{color:var(--red); background:rgba(255,123,123,.05);}
+  tr.overdue td.deal, tr.overdue .arrow{color:var(--red);}
+  .badge-over{display:inline-block; margin-left:10px; background:rgba(255,123,123,.14);
+    border:1px solid rgba(255,123,123,.45); color:var(--red); border-radius:6px;
+    padding:2px 9px; font-size:11px; font-weight:800; letter-spacing:.03em; white-space:nowrap;}
+
+  .panel-foot{display:flex; align-items:center; gap:12px; padding:14px 18px;
+    border-top:1px solid var(--line); font-size:12px; color:var(--muted); font-weight:600;}
+  .panel-foot .right{margin-left:auto; display:flex; gap:8px;}
+  .pg{width:30px; height:30px; display:grid; place-items:center; border:1px solid var(--line);
+    border-radius:8px; font-size:12px; font-weight:700; color:var(--muted);}
+  .pg.on{background:rgba(76,201,240,.15); color:var(--cyan); border-color:rgba(76,201,240,.5);}
+
+  .note{margin-top:16px; font-size:11.5px; color:var(--muted); line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- sidebar -->
+  <aside class="side">
+    <div class="side-brand"><span class="mark"></span>CXBASE</div>
+    <div class="side-label">管理メニュー</div>
+    <nav class="snav">
+      <a href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg>
+        ダッシュボード
+      </a>
+      <a href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v13H4z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+        案件管理
+      </a>
+      <a href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c.7-3.4 2.8-5 5.5-5s4.8 1.6 5.5 5"/><path d="M16 5.5a3.5 3.5 0 0 1 0 5"/><path d="M17.5 15c1.8.7 2.7 2.3 3 5"/></svg>
+        買い手管理
+      </a>
+      <a href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg>
+        売り手管理
+      </a>
+      <a class="active" href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M9 14h6M9 17h4"/></svg>
+        開示依頼
+        <span class="num">47</span>
+      </a>
+      <a href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 12h8"/><path d="M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
+        マッチング
+      </a>
+      <a href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        固定ページ
+      </a>
+      <a href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg>
+        設定
+      </a>
+    </nav>
+    <div class="side-foot">CXBASE 運営コンソール</div>
+  </aside>
+
+  <!-- main -->
+  <div class="maincol">
+
+    <div class="topbar">
+      <span class="app">CXBASE Admin</span>
+      <span class="env">INTERNAL</span>
+      <div class="op"><span class="av">オ</span>オペレーター</div>
+    </div>
+
+    <main>
+      <div class="page-head">
+        <h1>開示依頼管理</h1>
+        <div class="page-sub">実名開示依頼の受領〜面談化までを一元管理</div>
+      </div>
+
+      <div class="tabs">
+        <span class="tab on">すべて<b>47</b></span>
+        <span class="tab">新規<b>5</b></span>
+        <span class="tab">許可待ち<b>9</b></span>
+        <span class="tab">開示済み<b>18</b></span>
+        <span class="tab">面談化<b>11</b></span>
+        <span class="tab">見送り<b>4</b></span>
+      </div>
+
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>依頼ID</th>
+              <th>買い手</th>
+              <th>対象案件</th>
+              <th>ステータス</th>
+              <th>次アクション（期限）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="overdue">
+              <td class="id">R-2026-0031</td>
+              <td class="buyer">買い手A</td>
+              <td class="deal">D-2026-0001</td>
+              <td><span class="chip st-wait"><span class="dot"></span>売り手許可待ち</span></td>
+              <td>売り手へ確認（07/03）<span class="badge-over">期限超過</span></td>
+            </tr>
+            <tr>
+              <td class="id">R-2026-0032</td>
+              <td class="buyer">買い手B</td>
+              <td class="deal">D-2026-0001</td>
+              <td><span class="chip st-wait"><span class="dot"></span>売り手許可待ち</span></td>
+              <td>売り手へ確認（07/07）</td>
+            </tr>
+            <tr>
+              <td class="id">R-2026-0033</td>
+              <td class="buyer">買い手E</td>
+              <td class="deal">D-2026-0002</td>
+              <td><span class="chip st-new"><span class="dot"></span>新規</span></td>
+              <td>受領確認（07/06）</td>
+            </tr>
+            <tr>
+              <td class="id">R-2026-0034</td>
+              <td class="buyer">買い手C</td>
+              <td class="deal">D-2026-0001</td>
+              <td><span class="chip st-open"><span class="dot"></span>開示済み</span></td>
+              <td>面談設定（07/08）</td>
+            </tr>
+            <tr>
+              <td class="id">R-2026-0035</td>
+              <td class="buyer">買い手F</td>
+              <td class="deal">D-2026-0003</td>
+              <td><span class="chip st-mtg"><span class="dot"></span>面談化</span></td>
+              <td>進捗確認（07/10）</td>
+            </tr>
+            <tr>
+              <td class="id">R-2026-0036</td>
+              <td class="buyer">買い手G</td>
+              <td class="deal">D-2026-0002</td>
+              <td><span class="chip st-pass"><span class="dot"></span>見送り</span></td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="panel-foot">
+          全47件中 1〜6件を表示
+          <div class="right">
+            <span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">…</span><span class="pg">8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        ステータスは「新規 → 売り手許可待ち → 開示済み → 面談化」の順に進みます（見送りはいつでも設定可）。
+        期限を過ぎた次アクションは赤色で表示されます。
+      </div>
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>

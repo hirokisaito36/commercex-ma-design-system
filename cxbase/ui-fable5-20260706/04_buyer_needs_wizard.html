@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE 買いニーズ登録 Step1（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --yellow:#F4B400;
+    --bg:#F7F7F4; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--white);}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header（縮退版：ロゴ＋保存して中断のみ） ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--yellow); transform:rotate(45deg);}
+  .save-exit{margin-left:auto; color:rgba(255,255,255,.85); font-size:13px; font-weight:600;
+    text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(255,255,255,.35);}
+
+  /* ===== page ===== */
+  main{max-width:720px; margin:0 auto; padding:36px 24px 56px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em; margin-bottom:20px;}
+
+  /* ===== progress ===== */
+  .progress{display:flex; align-items:center; gap:16px; margin-bottom:24px;}
+  .steps{display:flex; align-items:center; gap:10px; flex:1;}
+  .pstep{display:flex; align-items:center; gap:8px; white-space:nowrap;}
+  .pdot{width:28px; height:28px; border-radius:50%; display:grid; place-items:center;
+    font-size:13px; font-weight:800; background:var(--white); border:1.5px solid var(--line); color:var(--muted);}
+  .pstep.on .pdot{background:var(--yellow); border-color:var(--yellow); color:var(--black);}
+  .pname{font-size:13px; font-weight:700; color:var(--muted);}
+  .pstep.on .pname{color:var(--black);}
+  .pline{flex:1; height:1.5px; background:var(--line); min-width:20px;}
+  .pcount{font-size:13px; font-weight:800; color:var(--muted); white-space:nowrap;}
+
+  /* ===== panel ===== */
+  .panel{background:var(--white); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:28px;}
+  .sec{padding-top:24px; margin-top:24px; border-top:1px solid var(--line);}
+  .sec:first-child{padding-top:0; margin-top:0; border-top:none;}
+  .sec-label{font-size:14.5px; font-weight:800; margin-bottom:14px;}
+  .sec-label .opt{color:var(--muted); font-weight:600; font-size:12px; margin-left:6px;}
+
+  /* ===== category tiles ===== */
+  .tile-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;}
+  .cat-tile{position:relative; border:1.5px solid var(--line); background:var(--white);
+    border-radius:12px; padding:16px 8px 13px; display:flex; flex-direction:column;
+    align-items:center; gap:7px;}
+  .cat-tile > svg{width:44px; height:44px;}
+  .cat-tile .cname{font-size:12.5px; font-weight:700; text-align:center; white-space:nowrap;}
+  .cat-tile.sel{border-color:var(--yellow); box-shadow:0 0 0 1px var(--yellow);
+    background:linear-gradient(135deg,#FFF9E3,#FAFAF7);}
+  .sel-badge{position:absolute; top:8px; right:8px; width:20px; height:20px; border-radius:50%;
+    background:var(--black); display:grid; place-items:center;}
+  .sel-badge svg{width:11px; height:11px;}
+  .cat-tile.wide .cname{color:#3d3a33;}
+
+  /* ===== range chips ===== */
+  .chips{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
+  .chip{border:1px solid var(--line); background:var(--card); border-radius:999px;
+    padding:9px 18px; font-size:13px; font-weight:600; color:#3d3a33;}
+  .chip.sel{background:var(--black); color:var(--white); border-color:var(--black);
+    border-bottom:2.5px solid var(--yellow); padding-bottom:7.5px; font-weight:700;}
+
+  /* ===== actions ===== */
+  .actions{display:flex; align-items:center; justify-content:space-between;
+    padding-top:24px; margin-top:24px; border-top:1px solid var(--line);}
+  .btn-back{padding:12px 26px; border:1px solid var(--line); background:var(--white);
+    border-radius:9px; font-size:13.5px; font-weight:700; color:var(--muted);}
+  .btn-next{padding:13px 44px; background:var(--yellow); color:var(--black);
+    border-radius:9px; font-size:14px; font-weight:800; letter-spacing:.02em;}
+  .wizard-note{text-align:center; font-size:12px; color:var(--muted); margin-top:18px; line-height:1.7;}
+
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+
+  @media (max-width:1080px){
+    main{max-width:720px;}
+  }
+  @media (max-width:720px){
+    .topbar{padding:0 16px;}
+    main{padding:24px 16px 48px;}
+    h1{font-size:22px;}
+    .progress{gap:10px;}
+    .pstep:not(.on) .pname{display:none;}
+    .panel{padding:20px 16px;}
+    .tile-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .chips{gap:8px;}
+    .chip{padding:8px 14px; font-size:12.5px;}
+    .btn-back{padding:11px 18px;}
+    .btn-next{padding:12px 28px;}
+    .foot{flex-wrap:wrap; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <a class="save-exit" href="#">保存して中断</a>
+  </div>
+</header>
+
+<main>
+  <h1>買いニーズ登録</h1>
+
+  <div class="progress">
+    <div class="pcount">1/3</div>
+    <div class="steps">
+      <div class="pstep on"><span class="pdot">1</span><span class="pname">業種と規模</span></div>
+      <div class="pline"></div>
+      <div class="pstep"><span class="pdot">2</span><span class="pname">投資方針</span></div>
+      <div class="pline"></div>
+      <div class="pstep"><span class="pdot">3</span><span class="pname">確認</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <div class="sec">
+      <div class="sec-label">探している業種<span class="opt">（複数選択可）</span></div>
+      <div class="tile-grid">
+
+        <div class="cat-tile sel">
+          <span class="sel-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F4B400" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l5 5 11-12"/></svg></span>
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="22" y="28" width="18" height="26" rx="4"/>
+            <rect x="28.5" y="21" width="5" height="7"/>
+            <path d="M31 21v-6h-9v5"/>
+            <path d="M22 40h18"/>
+            <path d="M49 38c0 0-4.5 5.5-4.5 8.5a4.5 4.5 0 0 0 9 0C53.5 43.5 49 38 49 38z" fill="#F4B400"/>
+          </svg>
+          <span class="cname">美容・化粧品</span>
+        </div>
+
+        <div class="cat-tile sel">
+          <span class="sel-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F4B400" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l5 5 11-12"/></svg></span>
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="18" y="22" width="20" height="30" rx="4"/>
+            <rect x="21" y="13" width="14" height="9" rx="2"/>
+            <path d="M18 34h20"/>
+            <path d="M42 22q10-8 16-3q-3 10-13 10q-2-4-3-7z"/>
+            <path d="M45 27q5-2 9-4"/>
+            <rect x="41" y="42" width="15" height="7.6" rx="3.8" transform="rotate(-28 48.5 45.8)" fill="#F4B400"/>
+          </svg>
+          <span class="cname">健康食品・サプリ</span>
+        </div>
+
+        <div class="cat-tile">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 12l-11 8 5 7 5-3v28h20V24l5 3 5-7-11-8a7 7 0 0 1-18 0z"/>
+            <path d="M22 24l-0 0"/>
+            <rect x="45" y="40" width="10" height="13" rx="2" fill="#F4B400" transform="rotate(16 50 46)"/>
+            <circle cx="49" cy="43.5" r="1.5" fill="#111" stroke="none" transform="rotate(16 50 46)"/>
+          </svg>
+          <span class="cname">アパレル</span>
+        </div>
+
+        <div class="cat-tile">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="30" cy="43" rx="12" ry="9"/>
+            <circle cx="15" cy="30" r="4.5"/>
+            <circle cx="25" cy="22" r="4.5"/>
+            <circle cx="36" cy="22" r="4.5"/>
+            <circle cx="46" cy="30" r="4.5"/>
+            <path d="M52 43l-1.6-1.5a4 4 0 0 0-5.6 5.6l7.2 7 7.2-7a4 4 0 0 0-5.6-5.6L52 43z" fill="#F4B400"/>
+          </svg>
+          <span class="cname">ペット用品</span>
+        </div>
+
+        <div class="cat-tile">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 36h36a18 18 0 0 1-36 0z"/>
+            <path d="M25 54h14"/>
+            <path d="M32 50v4"/>
+            <path d="M25 28q2.5-3.5 0-7t0-7" stroke="#F4B400"/>
+            <path d="M35 28q2.5-3.5 0-7t0-7" stroke="#F4B400"/>
+          </svg>
+          <span class="cname">食品・飲料</span>
+        </div>
+
+        <div class="cat-tile">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 30l16-8 16 8-16 8-16-8z"/>
+            <path d="M16 30v14l16 8V38"/>
+            <path d="M48 30v14l-16 8"/>
+            <path d="M16 30l-7-5 16-8 7 5"/>
+            <path d="M48 30l7-5-16-8-7 5"/>
+            <path d="M46 10l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6L46 10z" fill="#F4B400" stroke-width="2"/>
+          </svg>
+          <span class="cname">ライフスタイル・雑貨</span>
+        </div>
+
+        <div class="cat-tile">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="14" width="40" height="26" rx="3"/>
+            <path d="M32 40v7"/>
+            <path d="M22 51h20"/>
+            <path d="M19 33l7-7 5 4 9-10"/>
+            <circle cx="42" cy="19" r="3" fill="#F4B400" stroke="#111"/>
+          </svg>
+          <span class="cname">EC支援・SaaS</span>
+        </div>
+
+        <div class="cat-tile">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 27h28v17H10z"/>
+            <path d="M38 31h8l7 7v6h-15z"/>
+            <circle cx="19" cy="49" r="4.5"/>
+            <circle cx="45" cy="49" r="4.5"/>
+            <rect x="14" y="18" width="11" height="9" rx="1.5" fill="#F4B400"/>
+          </svg>
+          <span class="cname">物流・オペレーション</span>
+        </div>
+
+        <div class="cat-tile">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="22" y="22" width="20" height="20" transform="rotate(45 32 32)"/>
+            <circle cx="32" cy="32" r="24" stroke-dasharray="2 6"/>
+            <rect x="45" y="11" width="8" height="8" transform="rotate(45 49 15)" fill="#F4B400"/>
+          </svg>
+          <span class="cname">その他</span>
+        </div>
+
+        <div class="cat-tile wide">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="32" r="20"/>
+            <path d="M32 15.5v3.5"/><path d="M32 45v3.5"/><path d="M15.5 32H19"/><path d="M45 32h3.5"/>
+            <path d="M41 23l-6 12-12 6 6-12 12-6z"/>
+            <path d="M41 23l-6 12-6-6 12-6z" fill="#F4B400" stroke-width="2"/>
+          </svg>
+          <span class="cname">まだ広く見たい</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">対象の年商レンジ</div>
+      <div class="chips">
+        <span class="chip">〜1億円</span>
+        <span class="chip sel">1〜5億円</span>
+        <span class="chip">5〜10億円</span>
+        <span class="chip">10億円〜</span>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">投資予算レンジ</div>
+      <div class="chips">
+        <span class="chip">〜1億円</span>
+        <span class="chip sel">1〜3億円</span>
+        <span class="chip">3億円〜</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn-back" href="#">戻る</a>
+      <a class="btn-next" href="#">次へ</a>
+    </div>
+
+  </div>
+
+  <div class="wizard-note">約1分で完了します。登録内容は売り手の提案可否判断に使われます。</div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>

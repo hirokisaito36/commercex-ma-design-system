@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>CXBASE 買い手ホーム（Fable5試作）</title>
+<style>
+  :root{
+    --black:#111111; --white:#ffffff; --yellow:#F4B400;
+    --bg:#F7F7F4; --line:#E6E2D8; --card:#FAFAF7; --muted:#6F6A60;
+    --shadow:0 10px 30px rgba(17,17,17,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--black);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; flex-direction:column;
+  }
+  a{text-decoration:none; color:inherit;}
+
+  /* ===== header ===== */
+  header{background:var(--black); color:var(--white);}
+  .topbar{max-width:1280px; margin:0 auto; height:72px; padding:0 32px;
+    display:flex; align-items:center; gap:36px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; letter-spacing:.04em;}
+  .mark{width:14px; height:14px; border:3.5px solid var(--yellow); transform:rotate(45deg);}
+  nav{display:flex; gap:28px; font-size:14px; font-weight:600; color:rgba(255,255,255,.85); white-space:nowrap;}
+  nav .active{color:#fff; position:relative;}
+  nav .active::after{content:""; position:absolute; left:0; right:0; bottom:-26px; height:3px; background:var(--yellow);}
+  .head-actions{margin-left:auto; display:flex; gap:18px; align-items:center;}
+  .account-chip{display:flex; align-items:center; gap:8px; border:1px solid rgba(255,255,255,.4);
+    border-radius:999px; padding:7px 16px 7px 9px; font-size:12.5px; font-weight:600; white-space:nowrap;}
+  .avatar{width:20px; height:20px; border-radius:50%; background:var(--yellow); color:var(--black);
+    font-size:10.5px; font-weight:800; display:grid; place-items:center;}
+
+  /* ===== page ===== */
+  main{max-width:1280px; width:100%; margin:0 auto; padding:40px 32px 56px; flex:1;}
+  .page-head{margin-bottom:26px;}
+  h1{font-size:26px; font-weight:800; letter-spacing:.02em; margin-bottom:6px;}
+  .page-sub{color:var(--muted); font-size:13px; font-weight:500;}
+
+  /* ===== KPI ===== */
+  .kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-bottom:28px;}
+  .kpi{background:var(--white); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:18px 22px;}
+  .kpi .k{display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700;
+    color:var(--muted); letter-spacing:.04em; white-space:nowrap;}
+  .kpi .k .sq{width:8px; height:8px; background:var(--yellow); transform:rotate(45deg); flex:0 0 auto;}
+  .kpi .n{font-size:30px; font-weight:800; letter-spacing:.01em; margin-top:4px; line-height:1.3; white-space:nowrap;}
+  .kpi .u{font-size:12px; color:var(--muted); font-weight:600; margin-left:2px;}
+
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:28px; align-items:start;}
+
+  /* ===== section cards ===== */
+  .sec{background:var(--white); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:26px 28px; margin-bottom:8px;}
+  .sec-head{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .sec-mark{width:9px; height:9px; background:var(--yellow); transform:rotate(45deg); flex:0 0 auto;}
+  h2{font-size:15.5px; font-weight:800; letter-spacing:.01em; white-space:nowrap;}
+  .sec-note{color:var(--muted); font-size:12.5px; margin-bottom:16px;}
+
+  /* ---- progress rows ---- */
+  .prog-row{display:flex; align-items:center; gap:16px; padding:18px 2px; border-top:1px solid var(--line);}
+  .prog-main{min-width:0;}
+  .prog-title{font-size:14.5px; font-weight:800; letter-spacing:.01em; white-space:nowrap;}
+  .prog-sub{font-size:12px; color:var(--muted); font-weight:500; margin-top:2px; white-space:nowrap;}
+  .prog-sub b{font-weight:600;}
+  .prog-side{margin-left:auto; display:flex; align-items:center; gap:12px;}
+  .status{font-size:11.5px; font-weight:700; border-radius:999px; padding:5px 13px; white-space:nowrap;}
+  .st-wait{background:var(--card); border:1px solid var(--line); color:#3d3a33;}
+  .st-open{background:var(--yellow); color:var(--black);}
+  .btn-sm{display:inline-block; background:var(--black); color:var(--white); border-radius:8px;
+    padding:9px 16px; font-size:12px; font-weight:700; white-space:nowrap;}
+
+  /* ---- list head ---- */
+  .list-head{display:flex; align-items:center; gap:10px; margin:24px 0 16px;}
+  .list-head .more{margin-left:auto; font-size:12px; font-weight:700;
+    border-bottom:2px solid var(--yellow); padding-bottom:1px; white-space:nowrap;}
+
+  /* ===== deal cards（正本01の様式） ===== */
+  .card{background:var(--white); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:0; display:grid; overflow:hidden; align-items:stretch;
+    grid-template-columns:206px minmax(0,1fr) 188px; gap:18px; margin-bottom:20px;}
+  .card-body{padding:16px 0;}
+  .card-thumb{position:relative; border-right:1px solid var(--line);}
+  .thumb-chip{position:absolute; top:12px; left:12px; z-index:2; background:var(--black); color:var(--white);
+    font-size:13px; font-weight:800; letter-spacing:.04em; padding:7px 12px; border-radius:7px;
+    border-bottom:2.5px solid var(--yellow); white-space:nowrap;}
+  .thumb-art{position:absolute; inset:0; overflow:hidden; display:grid; place-items:center;
+    background:radial-gradient(circle at 52% 58%, rgba(244,180,0,.11), rgba(244,180,0,0) 55%),
+    linear-gradient(135deg,#FFF9E3,#FAFAF7);}
+  .thumb-art svg{width:116px; height:116px; position:relative; z-index:1;}
+  .cat-row{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:5px;}
+  .meta{color:var(--muted); font-size:11.5px; font-weight:500; white-space:nowrap;}
+  .meta b{font-weight:600;}
+  .title{font-size:19px; font-weight:800; letter-spacing:.01em; margin-bottom:4px;
+    padding-bottom:6px; position:relative; display:inline-block;}
+  .title::after{content:""; position:absolute; left:0; bottom:0; width:44px; height:3px; background:var(--yellow);}
+  .desc{color:#3d3a33; font-size:12.5px; margin:0 0 10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .desc b{font-weight:800;}
+  .metrics{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 20px; margin:10px 0 10px;}
+  .metric{white-space:nowrap;}
+  .metric .k{font-size:10.5px; color:var(--muted); font-weight:600; margin-bottom:2px;}
+  .metric .v{font-size:16px; font-weight:800;}
+  .metric.sub .v{font-size:12px; font-weight:600; color:#3d3a33;}
+  .v.up{color:#1f7a4d;}
+  .v.flat{color:#6F6A60;}
+  .tagrow{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .tag{background:var(--card); border:1px solid var(--line); border-radius:999px;
+    padding:4px 11px; font-size:11.5px; font-weight:600; color:#3d3a33;}
+  .reason{font-size:11.5px; color:var(--muted); margin-left:4px;}
+
+  .cta-col{border-left:1px solid var(--line); padding:16px 22px 16px 20px; align-self:stretch;
+    display:flex; flex-direction:column; justify-content:center; gap:10px;}
+  .price-k{font-size:11.5px; color:var(--muted); font-weight:600;}
+  .price-v{font-size:17.5px; font-weight:800; letter-spacing:.01em; margin-bottom:4px; white-space:nowrap;}
+  .cta{display:block; text-align:center; background:var(--yellow); color:var(--black);
+    border-radius:9px; padding:12px 6px; font-size:12.5px; font-weight:800; white-space:nowrap;}
+  .cta-note{font-size:10.5px; color:var(--muted); text-align:center; line-height:1.5;}
+
+  /* ===== right rail ===== */
+  .rail-card{background:var(--white); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:18px;}
+  .rail-card h3{font-size:14.5px; font-weight:800;}
+  .rail-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}
+  .needs-row{display:flex; gap:14px; padding:16px 0; font-size:13px;}
+  .needs-row:first-of-type{padding-top:2px;}
+  .needs-row:last-of-type{padding-bottom:2px;}
+  .needs-row + .needs-row{border-top:1px dashed var(--line);}
+  .needs-k{flex:0 0 92px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  .needs-v{font-weight:700;}
+  .edit-link{display:inline-block; font-size:12px; font-weight:700;
+    border-bottom:2px solid var(--yellow); padding-bottom:1px; margin-top:14px; white-space:nowrap;}
+
+  .adv{display:flex; align-items:center; gap:12px; margin:16px 0 12px;}
+  .adv-avatar{flex:0 0 40px; width:40px; height:40px; border-radius:50%; background:var(--black);
+    color:var(--yellow); font-size:13px; font-weight:800; display:grid; place-items:center; letter-spacing:.02em;}
+  .adv-name{font-size:13.5px; font-weight:800;}
+  .adv-sub{font-size:11.5px; color:var(--muted); font-weight:500;}
+  .adv-note{font-size:12px; color:var(--muted); line-height:1.7; margin-bottom:16px;}
+  .btn-outline{display:block; text-align:center; border:1.5px solid var(--black); color:var(--black);
+    border-radius:9px; padding:11px 10px; font-size:13px; font-weight:700; background:var(--white);}
+
+  footer{border-top:1px solid var(--line); background:var(--white);}
+  .foot{max-width:1280px; margin:0 auto; padding:22px 32px; display:flex; gap:24px;
+    font-size:12px; color:var(--muted); font-weight:500;}
+  .foot .right{margin-left:auto;}
+
+  @media (max-width:1080px){
+    .layout{grid-template-columns:1fr;}
+  }
+  @media (max-width:720px){
+    nav{display:none;}
+    .topbar{padding:0 16px;}
+    main{padding:24px 16px 48px;}
+    h1{font-size:22px;}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;}
+    .kpi .n{font-size:24px;}
+    .prog-row{flex-wrap:wrap;}
+    .prog-side{margin-left:0; width:100%; justify-content:flex-start;}
+    .card{grid-template-columns:136px minmax(0,1fr); gap:12px; align-items:start;}
+    .card-thumb{width:112px; height:112px; margin:12px 0 12px 12px; border:1px solid var(--line);
+      border-radius:10px; overflow:hidden;}
+    .thumb-chip{top:6px; left:6px; font-size:9px; letter-spacing:0; padding:3px 6px; border-radius:4px;}
+    .thumb-art svg{width:58px; height:58px;}
+    .card-body{padding:12px 12px 6px 0;}
+    .title{font-size:15.5px;}
+    .desc, .metric.sub, .tagrow{display:none;}
+    .metrics{grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px 12px; margin:8px 0 4px;}
+    .metric .v{font-size:12.5px;}
+    .cta-col{grid-column:1/-1; border-left:none; border-top:1px solid var(--line);
+      flex-direction:row; align-items:center; justify-content:space-between; padding:12px 14px; gap:12px;}
+    .cta-note{display:none;}
+    .price-v{font-size:16px; margin-bottom:0;}
+    .foot{flex-wrap:wrap; gap:12px;}
+  }
+.bell{position:relative; width:34px; height:34px; display:grid; place-items:center;}
+  .bell-badge{position:absolute; top:-2px; right:-2px; min-width:17px; height:17px; padding:0 4px;
+    background:var(--yellow); color:var(--black); border-radius:999px;
+    font-size:10.5px; font-weight:800; display:grid; place-items:center; line-height:1;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>CXBASE</div>
+    <nav>
+      <a href="#">案件を探す</a>
+      <a href="#">気になる</a>
+      <a href="#">開示依頼</a>
+      <a href="#">買いニーズ</a>
+      <a href="#">アカウント</a>
+    </nav>
+    <div class="head-actions">
+      <div class="bell">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9z"/><path d="M10.2 20a2 2 0 0 0 3.6 0"/></svg>
+        <span class="bell-badge">2</span>
+      </div>
+      <div class="account-chip"><span class="avatar">買</span>買い手アカウント</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>ホーム</h1>
+    <div class="page-sub">検討中の案件と新着のおすすめをまとめています（2026/07/03 時点）。</div>
+  </div>
+
+  <!-- ① KPI -->
+  <div class="kpis">
+    <div class="kpi"><div class="k"><span class="sq"></span>気になる</div><div class="n">12<span class="u">件</span></div></div>
+    <div class="kpi"><div class="k"><span class="sq"></span>開示依頼中</div><div class="n">4<span class="u">件</span></div></div>
+    <div class="kpi"><div class="k"><span class="sq"></span>許可待ち</div><div class="n">2<span class="u">件</span></div></div>
+    <div class="kpi"><div class="k"><span class="sq"></span>面談調整</div><div class="n">1<span class="u">件</span></div></div>
+  </div>
+
+  <div class="layout">
+
+    <!-- ===== left main ===== -->
+    <section>
+
+      <!-- ② progress -->
+      <div class="sec">
+        <div class="sec-head"><span class="sec-mark"></span><h2>開示依頼の進捗</h2></div>
+        <div class="sec-note">売り手の許可が下りると、実名と企業概要書を確認できるようになります。</div>
+        <div class="prog-row">
+          <div class="prog-main">
+            <div class="prog-title">スキンケアD2Cブランド</div>
+            <div class="prog-sub"><b>D-2026-0001</b>｜依頼日 2026/07/02</div>
+          </div>
+          <div class="prog-side">
+            <span class="status st-wait">売り手許可待ち</span>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-main">
+            <div class="prog-title">健康茶・ハーブティーEC</div>
+            <div class="prog-sub"><b>D-2026-0002</b>｜実名と概要書を確認できます</div>
+          </div>
+          <div class="prog-side">
+            <span class="status st-open">開示済み</span>
+            <a class="btn-sm" href="#">詳細を見る</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ recommendations -->
+      <div class="list-head">
+        <span class="sec-mark"></span><h2>おすすめの新着案件</h2>
+        <a class="more" href="#">案件一覧へ</a>
+      </div>
+
+      <article class="card">
+        <div class="card-thumb"><span class="thumb-chip">食品・飲料</span><div class="thumb-art"><svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 36h36a18 18 0 0 1-36 0z"/><path d="M25 54h14"/><path d="M32 50v4"/>
+          <path d="M25 28q2.5-3.5 0-7t0-7" stroke="#F4B400"/><path d="M35 28q2.5-3.5 0-7t0-7" stroke="#F4B400"/>
+        </svg></div></div>
+        <div class="card-body">
+          <div class="cat-row">
+            <span class="meta"><b>D-2026-0002</b>｜掲載 2026/06/21</span>
+          </div>
+          <div class="title">健康茶・ハーブティーEC</div>
+          <div class="metrics">
+            <div class="metric"><div class="k">年商レンジ</div><div class="v">1〜3億円</div></div>
+            <div class="metric"><div class="k">営業利益レンジ</div><div class="v">〜3千万円</div></div>
+            <div class="metric sub"><div class="k">運営体制</div><div class="v">〜3名・オーナー中心</div></div>
+            <div class="metric sub"><div class="k">売上トレンド</div><div class="v flat">横ばい →</div></div>
+          </div>
+          <div class="desc"><b>強み：</b>楽天上位の定番 × 少人数で回る運営</div>
+          <div class="tagrow">
+            <span class="tag">楽天</span><span class="tag">リピート率高</span><span class="tag">定期購入</span>
+            <span class="reason">譲渡理由：後継者不在</span>
+          </div>
+        </div>
+        <div class="cta-col">
+          <div>
+            <div class="price-k">希望価格レンジ</div>
+            <div class="price-v">5千万〜1億円</div>
+          </div>
+          <a class="cta" href="#">詳細を見る</a>
+          <div class="cta-note">開示済みの案件です。実名と<br>概要書を確認できます</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-thumb"><span class="thumb-chip">ライフスタイル・雑貨</span><div class="thumb-art"><svg viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 30l16-8 16 8-16 8-16-8z"/><path d="M16 30v14l16 8V38"/><path d="M48 30v14l-16 8"/>
+          <path d="M16 30l-7-5 16-8 7 5"/><path d="M48 30l7-5-16-8-7 5"/>
+          <path d="M46 10l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6L46 10z" fill="#F4B400" stroke-width="2"/>
+        </svg></div></div>
+        <div class="card-body">
+          <div class="cat-row">
+            <span class="meta"><b>D-2026-0003</b>｜掲載 2026/06/14</span>
+          </div>
+          <div class="title">アウトドアギアEC</div>
+          <div class="metrics">
+            <div class="metric"><div class="k">年商レンジ</div><div class="v">5〜10億円</div></div>
+            <div class="metric"><div class="k">営業利益レンジ</div><div class="v">5〜8千万円</div></div>
+            <div class="metric sub"><div class="k">運営体制</div><div class="v">6〜10名</div></div>
+            <div class="metric sub"><div class="k">売上トレンド</div><div class="v up">成長基調 ↗</div></div>
+          </div>
+          <div class="desc"><b>強み：</b>独自商品力 × チャネル分散の収益構造</div>
+          <div class="tagrow">
+            <span class="tag">自社EC中心</span><span class="tag">Amazon</span><span class="tag">卸併用</span>
+            <span class="reason">譲渡理由：成長資金の確保</span>
+          </div>
+        </div>
+        <div class="cta-col">
+          <div>
+            <div class="price-k">希望価格レンジ</div>
+            <div class="price-v">2.5〜3.5億円</div>
+          </div>
+          <a class="cta" href="#">開示依頼へ進む</a>
+          <div class="cta-note">売り手の許可後に実名と<br>概要書が開示されます</div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ===== right rail ===== -->
+    <aside>
+      <div class="rail-card">
+        <div class="rail-head">
+          <h3>買いニーズ登録状況</h3>
+          <span class="status st-open">登録済み</span>
+        </div>
+        <div class="needs-row"><span class="needs-k">関心カテゴリ</span><span class="needs-v">美容・健康食品</span></div>
+        <div class="needs-row"><span class="needs-k">投資予算</span><span class="needs-v">1〜3億円</span></div>
+        <a class="edit-link" href="#">編集する</a>
+      </div>
+      <div class="rail-card">
+        <h3>担当アドバイザー</h3>
+        <div class="adv">
+          <div class="adv-avatar">CX</div>
+          <div>
+            <div class="adv-name">CXBASE アドバイザー</div>
+            <div class="adv-sub">コマース・EC領域のM&amp;A専任</div>
+          </div>
+        </div>
+        <div class="adv-note">検討の進め方や条件の考え方など、ご相談はフォームまたはメールで承ります。</div>
+        <a class="btn-outline" href="#">相談を予約する</a>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>運営会社</span><span>利用規約</span><span>プライバシーポリシー</span>
+    <span>特定商取引法に基づく表記</span><span>CXMA相談</span>
+    <span class="right">© CommerceX M&amp;A</span>
+  </div>
+</footer>
+
+</body>
+</html>
